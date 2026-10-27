@@ -1,0 +1,170 @@
+.burnett-suite-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background: #00332e;
+  background: linear-gradient(135deg, #002b27 0%, #004d44 100%);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  font-family: inherit;
+}
+
+.suite-brand-zone {
+  display: flex;
+  align-items: center;
+}
+
+.suite-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.suite-brand-icon {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+}
+
+.suite-brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.suite-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #e6fffb;
+}
+
+.suite-subtitle {
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #80cbc4;
+  opacity: 0.9;
+}
+
+.suite-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 6px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.suite-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #b2dfdb;
+  transition: all 0.2s ease;
+}
+
+.suite-tab-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.suite-tab-btn.active {
+  background: #00796b;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.suite-tab-icon {
+  font-size: 0.95rem;
+}
+
+.suite-user-zone {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.suite-user-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.suite-avatar-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #26a69a;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.suite-user-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.suite-user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.suite-user-role {
+  font-size: 0.72rem;
+  color: #80cbc4;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.suite-logout-button {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #e0f2f1;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suite-logout-button:hover {
+  background: rgba(255, 82, 82, 0.15);
+  border-color: #ff5252;
+  color: #ff8a80;
+}
+
+@media (max-width: 900px) {
+  .burnett-suite-bar {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .suite-nav-tabs {
+    order: 3;
+    width: 100%;
+    justify-content: space-around;
+    overflow-x: auto;
+  }
+}

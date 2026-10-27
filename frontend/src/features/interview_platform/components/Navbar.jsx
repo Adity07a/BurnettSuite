@@ -1,0 +1,70 @@
+import { Link, useNavigate } from "react-router-dom";
+import apiClient from "../../../api/client";
+
+function getUserName() {
+  try {
+    const token =
+      localStorage.getItem("burnett_access_token") ||
+      localStorage.getItem("access_token") ||
+      localStorage.getItem("resumeai-access-token");
+    if (!token) return "Candidate";
+    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    return payload.email?.split("@")[0] || payload.username || "Candidate";
+  } catch {
+    return "Candidate";
+  }
+}
+
+function Navbar() {
+  const navigate = useNavigate();
+  const userName = getUserName();
+  const initial = userName.charAt(0).toUpperCase();
+
+  const logout = () => {
+    const confirmed = window.confirm("Are you sure you want to logout?");
+    if (!confirmed) return;
+    apiClient.clearSession();
+    navigate("/", { replace: true });
+  };
+
+  return (
+    <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-5 backdrop-blur sm:px-8">
+      <div>
+        <h2 className="text-xl font-semibold text-slate-800">Interview Dashboard</h2>
+        <p className="mt-1 text-sm text-slate-500">Track your interview preparation</p>
+      </div>
+
+      <div className="flex items-center gap-3 sm:gap-5">
+        <Link
+          to="/interview-platform/assistant"
+          state={{ startListening: true }}
+          className="rounded-xl px-3 py-2 text-sm font-semibold"
+          style={{ backgroundColor: "#e0f2f1", color: "#00695c" }}
+        >
+          🤖 AI Assistant
+        </Link>
+        <div className="flex items-center gap-3 border-l border-slate-200 pl-3 sm:pl-5">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-full font-bold text-white"
+            style={{ backgroundColor: "#00796b" }}
+          >
+            {initial}
+          </div>
+          <div className="hidden sm:block">
+            <p className="font-semibold capitalize text-slate-800">{userName}</p>
+            <p className="text-xs text-slate-500">Interview Candidate</p>
+          </div>
+          <button
+            onClick={logout}
+            type="button"
+            className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-500 transition hover:bg-red-50 hover:text-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export default Navbar;

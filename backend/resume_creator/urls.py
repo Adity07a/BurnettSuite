@@ -1,0 +1,56 @@
+
+from django.urls import path
+from rest_framework.routers import DefaultRouter
+
+from .ai_views import (
+    GenerateSummaryView,
+    GenerateResumeView,
+    ParseResumeProxyView,
+    ParseJobProxyView,
+    OptimizeResumeProxyView,
+    ImproveSectionProxyView,
+)
+from .views import ResumeViewSet
+from .template_views import ResumeTemplateListView
+
+router = DefaultRouter()
+router.register("", ResumeViewSet, basename="resume")
+
+urlpatterns = [
+    path(
+        "templates/",
+        ResumeTemplateListView.as_view(),
+        name="resume-templates",
+    ),
+] + router.urls + [
+    path(
+        "ai/generate-summary/",
+        GenerateSummaryView.as_view(),
+        name="ai-generate-summary",
+    ),
+    path(
+        "ai/generate-resume/",
+        GenerateResumeView.as_view(),
+        name="ai-generate-resume",
+    ),
+    path(
+        "ai/parse-job/",
+        ParseJobProxyView.as_view(),
+        name="ai-parse-job",
+    ),
+    path(
+        "ai/optimize-resume/",
+        OptimizeResumeProxyView.as_view(),
+        name="ai-optimize-resume",
+    ),
+    path(
+        "ai/improve-section/",
+        ImproveSectionProxyView.as_view(),
+        name="ai-improve-section",
+    ),
+    path(
+        "ai/parse-resume/",
+        ParseResumeProxyView.as_view(),
+        name="ai-parse-resume",
+     ),
+]

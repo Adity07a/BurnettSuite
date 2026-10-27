@@ -1,0 +1,2390 @@
+{
+  "schema_version": 1,
+  "description": "Local practice bank with 45 detailed Q&A imported from the user-provided Python/Django/FastAPI PDF, followed by 78 original starter questions.",
+  "questions": [
+    {
+      "id": "pdf45-python-01",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python"
+      ],
+      "question": "What are the main built-in data types in Python?",
+      "reference_answer": "Python commonly uses numeric types such as int, float and complex; sequence types such as list, tuple and range; text type str; mapping type dict; set types set and frozenset; boolean bool; binary types bytes and bytearray; and NoneType. In interviews, the important point is not only naming them, but knowing their behavior. Lists and dictionaries are mutable, while strings and tuples are immutable. Sets store unique hashable elements, and dictionaries store key-value pairs with unique hashable keys.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Which of these are mutable?",
+        "Which types require hashable elements or keys?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 1
+      }
+    },
+    {
+      "id": "pdf45-python-02",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python"
+      ],
+      "question": "What is the difference between list, tuple, set and dictionary?",
+      "reference_answer": "A list is an ordered mutable collection and allows duplicates. A tuple is ordered but immutable and also allows duplicates. A set is mutable, unordered in logical usage, stores unique hashable elements, and is useful for membership checks and set operations. A dictionary stores key-value pairs, preserves insertion order in modern Python, and requires unique hashable keys. Choose based on required semantics, not only syntax.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "When would you choose a tuple over a list?",
+        "Why is a set often faster for membership checks?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 2
+      }
+    },
+    {
+      "id": "pdf45-python-03",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python"
+      ],
+      "question": "What is the difference between mutable and immutable objects?",
+      "reference_answer": "Mutable objects can be changed in place after creation; examples include list, dict and set. Immutable objects cannot be changed in place; examples include int, float, str and tuple. When an immutable value appears to change, Python actually creates a new object and binds the variable to it. This matters for function arguments, hashing, dictionary keys, copying and shared references.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why can a tuple be a dictionary key but a list cannot?",
+        "Can a tuple containing a list be hashable?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 3
+      }
+    },
+    {
+      "id": "pdf45-python-04",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python"
+      ],
+      "question": "What is the difference between == and is?",
+      "reference_answer": "== compares values by calling equality logic, while is checks object identity - whether two references point to the exact same object in memory. Use == for value comparison. Use is mainly for singleton checks such as 'x is None'. Using is for strings or integers is incorrect because interning/caching may make results appear inconsistent.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why is 'x is None' preferred over 'x == None'?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 4
+      }
+    },
+    {
+      "id": "pdf45-python-05",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python"
+      ],
+      "question": "What are *args and **kwargs?",
+      "reference_answer": "*args collects extra positional arguments into a tuple, while **kwargs collects extra keyword arguments into a dictionary. They are useful for flexible APIs, wrappers and decorators. A common signature is def func(required, *args, **kwargs). They also support unpacking when calling functions: func(*my_list, **my_dict).",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What is the type of args?",
+        "What is the type of kwargs?",
+        "Can you use both together?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 5
+      }
+    },
+    {
+      "id": "pdf45-python-06",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "python",
+        "copying"
+      ],
+      "question": "What is the difference between shallow copy and deep copy?",
+      "reference_answer": "A shallow copy creates a new outer container but keeps references to nested objects. A deep copy recursively copies nested objects too. Therefore changing a nested mutable object can affect both original and shallow copy, but normally not the deep copy. Python provides copy.copy() and copy.deepcopy(). Deep copy is more expensive and should not be used automatically for every object.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What happens with nested lists?",
+        "When can deepcopy be problematic?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 6
+      }
+    },
+    {
+      "id": "pdf45-python-07",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "python",
+        "memory"
+      ],
+      "question": "How does Python memory management work?",
+      "reference_answer": "In CPython, memory management primarily uses reference counting plus a cyclic garbage collector. Every object has references pointing to it; when its reference count reaches zero, it can usually be released immediately. Reference counting alone cannot reclaim cycles, so Python's garbage collector detects unreachable reference cycles. CPython also uses its own memory allocator for small objects and may keep memory in internal pools instead of immediately returning it to the OS.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What is reference counting?",
+        "Why is garbage collection still needed?",
+        "Can Python applications still leak memory?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 7
+      }
+    },
+    {
+      "id": "pdf45-python-08",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "python"
+      ],
+      "question": "What are reference counting and garbage collection?",
+      "reference_answer": "Reference counting tracks how many active references point to an object. When the count reaches zero, CPython can deallocate that object. Cyclic references are the problem: object A may reference B while B references A even though nothing else can reach them. The cyclic garbage collector periodically identifies such unreachable cycles. The gc module can inspect, enable, disable or manually trigger cyclic collection.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What does gc.collect() do?",
+        "Why can __del__ complicate garbage collection?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 8
+      }
+    },
+    {
+      "id": "pdf45-python-09",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "python",
+        "concurrency"
+      ],
+      "question": "What is the GIL?",
+      "reference_answer": "The Global Interpreter Lock in standard CPython allows only one thread at a time to execute Python bytecode within a process. It simplifies memory management but limits CPU-bound parallelism with threads. Threads are still useful for I/O-bound work because the GIL is often released while waiting on network or file I/O. For CPU-heavy Python code, multiprocessing or native extensions may provide real parallelism.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Does the GIL mean Python cannot handle concurrency?",
+        "When would you use multiprocessing?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 9
+      }
+    },
+    {
+      "id": "pdf45-python-10",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "python",
+        "async",
+        "concurrency"
+      ],
+      "question": "Threading vs multiprocessing vs async - what is the difference?",
+      "reference_answer": "Threading runs multiple threads inside one process and is useful mainly for blocking I/O. Multiprocessing creates separate processes with separate memory and can use multiple CPU cores, making it better for CPU-bound work. Async programming uses cooperative concurrency in one event loop; tasks yield control while waiting for I/O. Async is efficient for many network operations but does not make CPU-heavy code faster by itself.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What happens if blocking code runs inside async def?",
+        "Which model would you choose for image processing?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 10
+      }
+    },
+    {
+      "id": "pdf45-python-11",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "python",
+        "decorators"
+      ],
+      "question": "What are decorators?",
+      "reference_answer": "A decorator is a callable that takes another function or class and returns a modified or wrapped callable. Decorators are useful for cross-cutting concerns such as logging, authorization, caching, retries and timing. The @decorator syntax is equivalent to reassigning the function through the decorator. functools.wraps should usually be used in wrappers to preserve the original function metadata.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why use functools.wraps?",
+        "Give a real Django/FastAPI decorator or dependency use case."
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 11
+      }
+    },
+    {
+      "id": "pdf45-python-12",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python",
+        "generators"
+      ],
+      "question": "What are iterators and generators?",
+      "reference_answer": "An iterator is an object implementing __iter__() and __next__(), producing one item at a time until StopIteration. A generator is an easier way to create an iterator using yield. Generators are memory-efficient because they produce values lazily instead of building the full result in memory. They are useful for large files, streams and pipelines.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What makes a generator lazy?",
+        "What happens after a generator is exhausted?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 12
+      }
+    },
+    {
+      "id": "pdf45-python-13",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python",
+        "generators"
+      ],
+      "question": "What is the difference between yield and return?",
+      "reference_answer": "return ends the function immediately and optionally returns one final value. yield pauses a generator function, returns one value, and preserves execution state so iteration can resume later. A function containing yield becomes a generator function. This is why generators can process large sequences without storing every item at once.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Can a generator use return?",
+        "What state is preserved between yields?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 13
+      }
+    },
+    {
+      "id": "pdf45-python-14",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "python",
+        "exceptions"
+      ],
+      "question": "How does exception handling work in Python?",
+      "reference_answer": "Python uses try, except, else and finally. Put risky code in try, catch specific expected exceptions in except, use else for code that should run only when no exception occurs, and finally for cleanup that must execute either way. Avoid broad 'except Exception' unless you log/re-raise appropriately, because it can hide defects. Custom exceptions help represent business-specific error conditions.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Difference between ValueError and TypeError?",
+        "When should you use raise?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 14
+      }
+    },
+    {
+      "id": "pdf45-python-15",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "python"
+      ],
+      "question": "Instance method vs classmethod vs staticmethod?",
+      "reference_answer": "An instance method receives self and works with a specific object. A classmethod receives cls and works with class-level state or alternative constructors. A staticmethod receives neither self nor cls automatically; it is simply a function namespaced inside the class. Use staticmethod only when the logic conceptually belongs to the class but does not need instance or class state.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Give an example of an alternative constructor using @classmethod."
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Python",
+        "question_number": 15
+      }
+    },
+    {
+      "id": "pdf45-django-01",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python"
+      ],
+      "question": "Explain the Django request-response lifecycle.",
+      "reference_answer": "A request reaches the web server and Django's WSGI/ASGI application, then passes through configured middleware. Django resolves the URL to a view, the view executes business logic and may use models/ORM, then returns an HttpResponse or rendered template. The response passes back through middleware in reverse order before being sent to the client. Understanding this flow is important for debugging middleware, auth, sessions and performance.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Where does middleware run?",
+        "Where does URL resolution happen?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 1
+      }
+    },
+    {
+      "id": "pdf45-django-02",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python"
+      ],
+      "question": "What is the difference between a Django project and a Django app?",
+      "reference_answer": "A project is the overall Django application configuration - settings, root URLs, deployment entry points and multiple apps. An app is a reusable functional module such as users, payments or inventory. A project can contain many apps, and an app can often be reused across projects if designed cleanly.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What belongs in settings.py?",
+        "Can one app have its own urls.py?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 2
+      }
+    },
+    {
+      "id": "pdf45-django-03",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python"
+      ],
+      "question": "What are models, views and templates?",
+      "reference_answer": "Models define persistent data and relationships using Django ORM. Views handle requests and return responses. Templates render presentation/UI using Django's template language. Django is often described as MVT: Model, View, Template. In API-only projects, DRF serializers and API views may replace traditional templates.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "How does MVT compare with MVC?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 3
+      }
+    },
+    {
+      "id": "pdf45-django-04",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "What is Django ORM?",
+      "reference_answer": "Django ORM lets developers query relational databases using Python objects instead of writing SQL for every operation. QuerySets are lazy, composable and translate to SQL only when evaluated. ORM supports filtering, joins, aggregation, annotations, transactions and relationships. Good developers still inspect generated SQL and understand indexes because ORM does not eliminate database-performance concerns.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What does lazy QuerySet mean?",
+        "How do you inspect generated SQL?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 4
+      }
+    },
+    {
+      "id": "pdf45-django-05",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python"
+      ],
+      "question": "Difference between get() and filter()?",
+      "reference_answer": "get() expects exactly one matching object. It raises DoesNotExist if none is found and MultipleObjectsReturned if more than one matches. filter() always returns a QuerySet, which may contain zero, one or many rows. Use get() when uniqueness is guaranteed; use filter() for collections or optional results.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What does .first() do?",
+        "Would you use get() on a non-unique field?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 5
+      }
+    },
+    {
+      "id": "pdf45-django-06",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "What is the N+1 query problem?",
+      "reference_answer": "N+1 occurs when code loads a list with one query and then executes an additional query for each row while accessing related data. For 100 students, one query for students plus 100 queries for departments produces 101 queries. Use select_related() or prefetch_related() depending on the relationship. N+1 is a common reason APIs become slow as data grows.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "How would you detect it?",
+        "What tools can show query counts?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 6
+      }
+    },
+    {
+      "id": "pdf45-django-07",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "What is select_related()?",
+      "reference_answer": "select_related() uses SQL JOINs to fetch single-valued related objects in the same query. It is designed mainly for ForeignKey and OneToOne relationships. Example: Student.objects.select_related('department').all(). Accessing student.department then avoids one query per student.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why is it not typically used for ManyToMany?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 7
+      }
+    },
+    {
+      "id": "pdf45-django-08",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "What is prefetch_related()?",
+      "reference_answer": "prefetch_related() performs separate database queries for related collections and joins them in Python. It works well for ManyToMany and reverse ForeignKey relationships. Example: Author.objects.prefetch_related('books'). It usually turns N+1 access to a related collection into a small fixed number of queries.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What is Prefetch()?",
+        "Can select_related and prefetch_related be used together?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 8
+      }
+    },
+    {
+      "id": "pdf45-django-09",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "select_related() vs prefetch_related()?",
+      "reference_answer": "select_related() performs SQL JOINs and is best for ForeignKey/OneToOne relationships. prefetch_related() performs additional queries and combines the results in Python, so it supports ManyToMany and reverse relationships. The right choice depends on relationship cardinality and query shape; blindly prefetching everything can waste memory and database work.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Student -> Department?",
+        "Department -> Students?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 9
+      }
+    },
+    {
+      "id": "pdf45-django-10",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python"
+      ],
+      "question": "ForeignKey vs OneToOneField vs ManyToManyField?",
+      "reference_answer": "ForeignKey represents many-to-one: many students can belong to one department. OneToOneField represents one-to-one: one user can have one profile. ManyToManyField represents many-to-many: students can enroll in many courses and courses can contain many students. Django creates an intermediate join table for many-to-many relationships unless you provide a custom through model.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "When would you use a through model?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 10
+      }
+    },
+    {
+      "id": "pdf45-django-11",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "middleware"
+      ],
+      "question": "What is middleware in Django?",
+      "reference_answer": "Middleware is a hook layer that can process requests before views and responses after views. Typical uses include authentication/session handling, security headers, logging, request IDs and caching. Middleware should handle cross-cutting concerns, not application-specific business logic.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Give an example of custom middleware.",
+        "What order does middleware execute?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 11
+      }
+    },
+    {
+      "id": "pdf45-django-12",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "authentication"
+      ],
+      "question": "How does Django authentication work?",
+      "reference_answer": "Django's auth system provides users, password hashing, login/logout, sessions, permissions and groups. authenticate() verifies credentials through configured backends, login() attaches the authenticated user to a session, and request.user represents the current user. Passwords are stored as salted hashes, not plaintext. Authorization can be implemented with permissions, groups, decorators or custom policies.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Authentication vs authorization?",
+        "What is request.user for anonymous requests?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 12
+      }
+    },
+    {
+      "id": "pdf45-django-13",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "migrations"
+      ],
+      "question": "makemigrations vs migrate?",
+      "reference_answer": "makemigrations detects model changes and creates migration files describing schema operations. migrate applies pending migration files to the configured database. Migration files belong in source control so environments apply the same schema history. showmigrations and sqlmigrate are useful for inspection and debugging.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What happens if migrations conflict?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 13
+      }
+    },
+    {
+      "id": "pdf45-django-14",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python"
+      ],
+      "question": "How do you optimize a slow Django API?",
+      "reference_answer": "Start by measuring rather than guessing. Check query count and slow SQL, remove N+1 queries with select_related/prefetch_related, add appropriate indexes, paginate large results, select only required fields, avoid unnecessary serialization, cache stable results, and move expensive non-request work to background jobs. Also inspect external API latency and application-level CPU/memory.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What is the first thing you would measure?",
+        "When would caching be harmful?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 14
+      }
+    },
+    {
+      "id": "pdf45-django-15",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "django",
+        "python",
+        "serialization"
+      ],
+      "question": "What is Django REST Framework and what do serializers do?",
+      "reference_answer": "DRF is a toolkit for building REST APIs on Django. It provides serializers, API views/viewsets, routers, authentication, permissions, pagination and content negotiation. Serializers convert complex objects such as model instances into primitive data suitable for JSON and validate/deserialize incoming data. ModelSerializer can generate fields and validators from a model.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Serializer vs ModelSerializer?",
+        "Where should business logic live?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "Django",
+        "question_number": 15
+      }
+    },
+    {
+      "id": "pdf45-fastapi-01",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python"
+      ],
+      "question": "What is FastAPI?",
+      "reference_answer": "FastAPI is a modern Python framework for building APIs using standard type hints. It is built on Starlette for the web layer and uses Pydantic for validation and serialization. It provides automatic OpenAPI/Swagger documentation, async support, dependency injection and strong request/response validation. It is well suited to high-throughput API and microservice development.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What are Starlette and Pydantic?",
+        "Why is automatic OpenAPI useful?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 1
+      }
+    },
+    {
+      "id": "pdf45-fastapi-02",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python"
+      ],
+      "question": "Why is FastAPI considered fast?",
+      "reference_answer": "FastAPI itself adds relatively low overhead and is built on Starlette/ASGI, which handles asynchronous I/O efficiently. Async endpoints can serve many concurrent I/O-bound operations while requests are waiting on databases or network services. Performance still depends heavily on application code, database queries and blocking operations; simply using FastAPI does not automatically make poorly designed code fast.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What happens if you call requests.get() inside async def?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 2
+      }
+    },
+    {
+      "id": "pdf45-fastapi-03",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "validation"
+      ],
+      "question": "What is Pydantic?",
+      "reference_answer": "Pydantic validates, parses and serializes data using Python type hints. In FastAPI, Pydantic models define request bodies, response models and configuration objects. Invalid inputs automatically produce structured validation errors. It also helps prevent accidental exposure of unwanted fields by explicitly defining response schemas.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why use separate request and response models?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 3
+      }
+    },
+    {
+      "id": "pdf45-fastapi-04",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python"
+      ],
+      "question": "What is dependency injection in FastAPI?",
+      "reference_answer": "Dependency injection means route functions declare what they need and FastAPI resolves/provides those dependencies. Depends() can supply database sessions, authenticated users, permissions, settings or reusable validation. This reduces duplicated setup code and makes logic easier to test because dependencies can be overridden.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "How would you inject the current user?",
+        "How do dependency overrides help testing?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 4
+      }
+    },
+    {
+      "id": "pdf45-fastapi-05",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python"
+      ],
+      "question": "How does Depends() work?",
+      "reference_answer": "When FastAPI sees a parameter defined with Depends(dependency_function), it resolves that dependency before the route handler. Dependencies can themselves have dependencies, forming a graph. FastAPI can reuse dependency results within one request unless configured otherwise. Dependencies may be sync or async and can use yield for setup/cleanup patterns such as database sessions.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why use yield in a DB-session dependency?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 5
+      }
+    },
+    {
+      "id": "pdf45-fastapi-06",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "async"
+      ],
+      "question": "def vs async def in FastAPI?",
+      "reference_answer": "Use async def when the route awaits non-blocking async I/O such as an async database driver or async HTTP client. Normal def routes are executed in a threadpool so blocking synchronous code does not directly block the event loop. The mistake is placing blocking synchronous operations directly inside async def without moving them to a threadpool or using async libraries.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Should CPU-heavy work run directly in async def?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 6
+      }
+    },
+    {
+      "id": "pdf45-fastapi-07",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "async"
+      ],
+      "question": "What happens if blocking code is used inside an async endpoint?",
+      "reference_answer": "It blocks the event loop thread, preventing other coroutines on that worker from making progress until the blocking call finishes. This can cause latency spikes and reduce throughput. Use an async library, run the blocking call in a threadpool where appropriate, or move CPU-heavy/background work to a worker system.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Give an example of blocking code.",
+        "What would you do for CPU-heavy PDF generation?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 7
+      }
+    },
+    {
+      "id": "pdf45-fastapi-08",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python"
+      ],
+      "question": "How does request validation work in FastAPI?",
+      "reference_answer": "FastAPI reads type annotations and Pydantic models to parse path, query, header and body values. Pydantic validates types and constraints before the route handler runs. If validation fails, FastAPI returns a 422 response by default. You can add custom validators or exception handlers when your API needs a different contract.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Path vs query vs body parameters?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 8
+      }
+    },
+    {
+      "id": "pdf45-fastapi-09",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "exceptions"
+      ],
+      "question": "How do you handle custom exceptions?",
+      "reference_answer": "Raise HTTPException for straightforward API errors, or define custom domain exceptions and register exception handlers to map them into consistent HTTP responses. This keeps business logic independent from transport details. A production API should standardize fields such as error code, message, request ID and optional details.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why avoid returning different error shapes from every endpoint?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 9
+      }
+    },
+    {
+      "id": "pdf45-fastapi-10",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python"
+      ],
+      "question": "What are APIRouter and routers?",
+      "reference_answer": "APIRouter groups related endpoints and allows prefixes, tags, shared dependencies and response configuration. Instead of putting every endpoint in main.py, production projects typically have modules such as auth, users, payments and health. Routers are included into the FastAPI application using include_router().",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Why is modular routing useful in microservices?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 10
+      }
+    },
+    {
+      "id": "pdf45-fastapi-11",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "jwt",
+        "authentication"
+      ],
+      "question": "How do you implement JWT authentication in FastAPI?",
+      "reference_answer": "Typically a login/token endpoint verifies the user's hashed password, then issues a signed access token containing minimal claims such as subject, role and expiry. Protected routes use a dependency to extract the Bearer token, verify signature and expiry, then load/authorize the user. Secrets or private keys belong in environment/secret management, not source code.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "What claims should a JWT contain?",
+        "Why should access tokens expire?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 11
+      }
+    },
+    {
+      "id": "pdf45-fastapi-12",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "oauth2"
+      ],
+      "question": "What is OAuth2?",
+      "reference_answer": "OAuth 2.0 is an authorization framework that defines how clients obtain and use access tokens to access protected resources. It separates the resource owner, client, authorization server and resource server. OAuth2 does not require JWT specifically; an access token may be opaque or JWT-formatted. FastAPI includes helpers such as OAuth2PasswordBearer for common bearer-token flows.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "OAuth2 vs authentication?",
+        "What is an access token?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 12
+      }
+    },
+    {
+      "id": "pdf45-fastapi-13",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "jwt",
+        "oauth2"
+      ],
+      "question": "OAuth2 vs JWT - what is the difference?",
+      "reference_answer": "OAuth2 is a protocol/framework for delegated authorization and token issuance/use. JWT is a token format: a signed set of claims encoded as header.payload.signature. OAuth2 may use JWT access tokens, but it can also use opaque tokens. Likewise, JWT can be used outside OAuth2. Saying 'OAuth and JWT are the same' is incorrect.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Can OAuth2 use opaque tokens?",
+        "Can JWT be used without OAuth2?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 13
+      }
+    },
+    {
+      "id": "pdf45-fastapi-14",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python",
+        "middleware"
+      ],
+      "question": "What is middleware in FastAPI?",
+      "reference_answer": "FastAPI middleware runs around every request and response at the ASGI application level. It is useful for correlation IDs, request timing, CORS, security headers, logging and metrics. Middleware should remain lightweight because it affects every request. User authentication/authorization is often better implemented as dependencies when route-specific behavior is required.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Middleware vs dependency injection?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 14
+      }
+    },
+    {
+      "id": "pdf45-fastapi-15",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "priority": 1,
+      "tags": [
+        "fastapi",
+        "python"
+      ],
+      "question": "How do you structure a production FastAPI project?",
+      "reference_answer": "A maintainable structure typically separates API routers, Pydantic schemas, ORM models, repositories/data access, services/business logic, dependencies, configuration/security, middleware and tests. Database sessions and HTTP clients should be managed cleanly, settings should come from environment/secret stores, and observability, health checks, migrations and automated tests should be part of the project from the start.",
+      "rubric": [
+        "Explain the distinction or mechanism requested in the question accurately",
+        "Support the explanation with the relevant behavior or practical example described in the reference"
+      ],
+      "follow_up_questions": [
+        "Where should business logic live?",
+        "Where should DB queries live?",
+        "How would you handle service-to-service HTTP clients?"
+      ],
+      "source": {
+        "document": "Python_Django_FastAPI_45_Interview_Questions_Detailed_Answers.pdf",
+        "section": "FastAPI",
+        "question_number": 15
+      }
+    },
+    {
+      "id": "tech-python-mutability-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "python"
+      ],
+      "question": "How do mutable and immutable objects differ in Python?",
+      "reference_answer": "Mutable objects can change in place; immutable objects cannot. Function defaults are evaluated once, so use None and create a fresh list per call. Copies may share nested objects; use explicit ownership, suitable deep copies or synchronization.",
+      "rubric": [
+        "Explain mutation versus rebinding",
+        "Describe shared references and an appropriate prevention strategy"
+      ]
+    },
+    {
+      "id": "tech-python-mutability-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "python"
+      ],
+      "question": "How can a mutable default argument cause a bug in Python?",
+      "reference_answer": "Mutable objects can change in place; immutable objects cannot. Function defaults are evaluated once, so use None and create a fresh list per call. Copies may share nested objects; use explicit ownership, suitable deep copies or synchronization.",
+      "rubric": [
+        "Explain mutation versus rebinding",
+        "Describe shared references and an appropriate prevention strategy"
+      ]
+    },
+    {
+      "id": "tech-python-mutability-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "python"
+      ],
+      "question": "How would you prevent shared-state bugs when Python workers modify nested data?",
+      "reference_answer": "Mutable objects can change in place; immutable objects cannot. Function defaults are evaluated once, so use None and create a fresh list per call. Copies may share nested objects; use explicit ownership, suitable deep copies or synchronization.",
+      "rubric": [
+        "Explain mutation versus rebinding",
+        "Describe shared references and an appropriate prevention strategy"
+      ]
+    },
+    {
+      "id": "tech-python-generators-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "python"
+      ],
+      "question": "What is a generator in Python?",
+      "reference_answer": "A generator yields items lazily and retains execution state. Iterating a file streams lines with bounded memory. Generators are usually single-pass; handle resource cleanup, checkpoints, buffering and retry semantics explicitly.",
+      "rubric": [
+        "Explain lazy iteration and memory use",
+        "Address consumption and cleanup constraints"
+      ]
+    },
+    {
+      "id": "tech-python-generators-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "python"
+      ],
+      "question": "How would you process a large file without loading it entirely into memory?",
+      "reference_answer": "A generator yields items lazily and retains execution state. Iterating a file streams lines with bounded memory. Generators are usually single-pass; handle resource cleanup, checkpoints, buffering and retry semantics explicitly.",
+      "rubric": [
+        "Explain lazy iteration and memory use",
+        "Address consumption and cleanup constraints"
+      ]
+    },
+    {
+      "id": "tech-python-generators-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "python"
+      ],
+      "question": "What are the tradeoffs of a generator pipeline with retries and partial failures?",
+      "reference_answer": "A generator yields items lazily and retains execution state. Iterating a file streams lines with bounded memory. Generators are usually single-pass; handle resource cleanup, checkpoints, buffering and retry semantics explicitly.",
+      "rubric": [
+        "Explain lazy iteration and memory use",
+        "Address consumption and cleanup constraints"
+      ]
+    },
+    {
+      "id": "tech-django-orm-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "What does the Django ORM do?",
+      "reference_answer": "The ORM maps models and querysets to database operations. Measure query counts and execution plans. Use select_related for single-valued joins and prefetch_related for collections. Paginate, select necessary fields and add justified indexes; compare plans and latency before and after.",
+      "rubric": [
+        "Use measurements rather than guessing",
+        "Explain join versus prefetch and pagination"
+      ]
+    },
+    {
+      "id": "tech-django-orm-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "How would you identify and fix an N+1 query in Django?",
+      "reference_answer": "The ORM maps models and querysets to database operations. Measure query counts and execution plans. Use select_related for single-valued joins and prefetch_related for collections. Paginate, select necessary fields and add justified indexes; compare plans and latency before and after.",
+      "rubric": [
+        "Use measurements rather than guessing",
+        "Explain join versus prefetch and pagination"
+      ]
+    },
+    {
+      "id": "tech-django-orm-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "django",
+        "python",
+        "database"
+      ],
+      "question": "How would you optimize a Django endpoint that joins several large tables?",
+      "reference_answer": "The ORM maps models and querysets to database operations. Measure query counts and execution plans. Use select_related for single-valued joins and prefetch_related for collections. Paginate, select necessary fields and add justified indexes; compare plans and latency before and after.",
+      "rubric": [
+        "Use measurements rather than guessing",
+        "Explain join versus prefetch and pagination"
+      ]
+    },
+    {
+      "id": "tech-django-validation-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "django",
+        "api",
+        "validation"
+      ],
+      "question": "Where should input validation happen in a Django API?",
+      "reference_answer": "Validate shapes and business rules in serializers or services, and enforce essential invariants with database constraints. Application checks alone race. Use atomic transactions, appropriate row locking or isolation, unique constraints and handling of integrity errors.",
+      "rubric": [
+        "Distinguish application validation and database guarantees",
+        "Address concurrent writes and transactions"
+      ]
+    },
+    {
+      "id": "tech-django-validation-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "django",
+        "api",
+        "validation"
+      ],
+      "question": "How would you prevent two requests from creating a duplicate record?",
+      "reference_answer": "Validate shapes and business rules in serializers or services, and enforce essential invariants with database constraints. Application checks alone race. Use atomic transactions, appropriate row locking or isolation, unique constraints and handling of integrity errors.",
+      "rubric": [
+        "Distinguish application validation and database guarantees",
+        "Address concurrent writes and transactions"
+      ]
+    },
+    {
+      "id": "tech-django-validation-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "django",
+        "api",
+        "validation"
+      ],
+      "question": "How would you preserve a cross-row invariant under concurrent Django requests?",
+      "reference_answer": "Validate shapes and business rules in serializers or services, and enforce essential invariants with database constraints. Application checks alone race. Use atomic transactions, appropriate row locking or isolation, unique constraints and handling of integrity errors.",
+      "rubric": [
+        "Distinguish application validation and database guarantees",
+        "Address concurrent writes and transactions"
+      ]
+    },
+    {
+      "id": "tech-sql-joins-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "sql",
+        "database"
+      ],
+      "question": "What is the difference between INNER JOIN and LEFT JOIN?",
+      "reference_answer": "INNER JOIN keeps matches; LEFT JOIN also retains unmatched left rows with nulls. Find no-order customers using NOT EXISTS or a left join and a null check on a non-null key. Multiple joined collections can multiply rows; pre-aggregate, use EXISTS or count distinct keys as appropriate.",
+      "rubric": [
+        "Explain unmatched rows and nulls",
+        "Avoid unintended row multiplication"
+      ]
+    },
+    {
+      "id": "tech-sql-joins-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "sql",
+        "database"
+      ],
+      "question": "How would you find customers who have never placed an order?",
+      "reference_answer": "INNER JOIN keeps matches; LEFT JOIN also retains unmatched left rows with nulls. Find no-order customers using NOT EXISTS or a left join and a null check on a non-null key. Multiple joined collections can multiply rows; pre-aggregate, use EXISTS or count distinct keys as appropriate.",
+      "rubric": [
+        "Explain unmatched rows and nulls",
+        "Avoid unintended row multiplication"
+      ]
+    },
+    {
+      "id": "tech-sql-joins-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "sql",
+        "database"
+      ],
+      "question": "How can a one-to-many join distort aggregate results and how would you fix it?",
+      "reference_answer": "INNER JOIN keeps matches; LEFT JOIN also retains unmatched left rows with nulls. Find no-order customers using NOT EXISTS or a left join and a null check on a non-null key. Multiple joined collections can multiply rows; pre-aggregate, use EXISTS or count distinct keys as appropriate.",
+      "rubric": [
+        "Explain unmatched rows and nulls",
+        "Avoid unintended row multiplication"
+      ]
+    },
+    {
+      "id": "tech-postgresql-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "postgresql",
+        "sql",
+        "database"
+      ],
+      "question": "When would you choose PostgreSQL for an application?",
+      "reference_answer": "PostgreSQL suits relational data, constraints and transactions. Inspect representative plans with EXPLAIN and carefully use EXPLAIN ANALYZE because it executes the query. Check indexes, selectivity, locks and workload. Use compatible expand-and-contract changes, backfill in batches, monitor lock duration and retain rollback options.",
+      "rubric": [
+        "Connect relational requirements to the decision",
+        "Describe measurement or safe migration sequencing"
+      ]
+    },
+    {
+      "id": "tech-postgresql-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "postgresql",
+        "sql",
+        "database"
+      ],
+      "question": "How would you diagnose a slow PostgreSQL query?",
+      "reference_answer": "PostgreSQL suits relational data, constraints and transactions. Inspect representative plans with EXPLAIN and carefully use EXPLAIN ANALYZE because it executes the query. Check indexes, selectivity, locks and workload. Use compatible expand-and-contract changes, backfill in batches, monitor lock duration and retain rollback options.",
+      "rubric": [
+        "Connect relational requirements to the decision",
+        "Describe measurement or safe migration sequencing"
+      ]
+    },
+    {
+      "id": "tech-postgresql-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "postgresql",
+        "sql",
+        "database"
+      ],
+      "question": "How would you plan a PostgreSQL schema migration with minimal downtime?",
+      "reference_answer": "PostgreSQL suits relational data, constraints and transactions. Inspect representative plans with EXPLAIN and carefully use EXPLAIN ANALYZE because it executes the query. Check indexes, selectivity, locks and workload. Use compatible expand-and-contract changes, backfill in batches, monitor lock duration and retain rollback options.",
+      "rubric": [
+        "Connect relational requirements to the decision",
+        "Describe measurement or safe migration sequencing"
+      ]
+    },
+    {
+      "id": "tech-database-indexes-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "sql",
+        "postgresql",
+        "database",
+        "index"
+      ],
+      "question": "What is a database index and why does it help reads?",
+      "reference_answer": "An index provides an access path at a cost in storage and writes. Choose columns based on actual filters, range conditions, ordering and selectivity; verify the plan. Low selectivity, stale statistics, casts, expressions or fetching many rows can make a scan preferable. Avoid assuming every index will help.",
+      "rubric": [
+        "Explain read versus write tradeoffs",
+        "Use workload and query plans to justify the index"
+      ]
+    },
+    {
+      "id": "tech-database-indexes-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "sql",
+        "postgresql",
+        "database",
+        "index"
+      ],
+      "question": "How would you choose the column order in a composite index?",
+      "reference_answer": "An index provides an access path at a cost in storage and writes. Choose columns based on actual filters, range conditions, ordering and selectivity; verify the plan. Low selectivity, stale statistics, casts, expressions or fetching many rows can make a scan preferable. Avoid assuming every index will help.",
+      "rubric": [
+        "Explain read versus write tradeoffs",
+        "Use workload and query plans to justify the index"
+      ]
+    },
+    {
+      "id": "tech-database-indexes-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "sql",
+        "postgresql",
+        "database",
+        "index"
+      ],
+      "question": "Why might a database ignore an index even when the query is slow?",
+      "reference_answer": "An index provides an access path at a cost in storage and writes. Choose columns based on actual filters, range conditions, ordering and selectivity; verify the plan. Low selectivity, stale statistics, casts, expressions or fetching many rows can make a scan preferable. Avoid assuming every index will help.",
+      "rubric": [
+        "Explain read versus write tradeoffs",
+        "Use workload and query plans to justify the index"
+      ]
+    },
+    {
+      "id": "tech-transactions-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "sql",
+        "database",
+        "transactions"
+      ],
+      "question": "What are the ACID properties of a database transaction?",
+      "reference_answer": "ACID means atomicity, consistency, isolation and durability. Use database constraints, atomic updates, locking or optimistic concurrency for invariants. Isolation levels have different anomalies. Keep transactions short, acquire locks consistently and retry the entire transaction on transient failures with bounded backoff and idempotency.",
+      "rubric": [
+        "Explain atomicity and concurrency protection",
+        "Address retries without duplicating effects"
+      ]
+    },
+    {
+      "id": "tech-transactions-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "sql",
+        "database",
+        "transactions"
+      ],
+      "question": "How would you prevent a lost update when two requests change the same balance?",
+      "reference_answer": "ACID means atomicity, consistency, isolation and durability. Use database constraints, atomic updates, locking or optimistic concurrency for invariants. Isolation levels have different anomalies. Keep transactions short, acquire locks consistently and retry the entire transaction on transient failures with bounded backoff and idempotency.",
+      "rubric": [
+        "Explain atomicity and concurrency protection",
+        "Address retries without duplicating effects"
+      ]
+    },
+    {
+      "id": "tech-transactions-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "sql",
+        "database",
+        "transactions"
+      ],
+      "question": "How would you handle deadlocks and serialization failures safely?",
+      "reference_answer": "ACID means atomicity, consistency, isolation and durability. Use database constraints, atomic updates, locking or optimistic concurrency for invariants. Isolation levels have different anomalies. Keep transactions short, acquire locks consistently and retry the entire transaction on transient failures with bounded backoff and idempotency.",
+      "rubric": [
+        "Explain atomicity and concurrency protection",
+        "Address retries without duplicating effects"
+      ]
+    },
+    {
+      "id": "tech-redis-cache-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "redis",
+        "cache",
+        "performance"
+      ],
+      "question": "Why would an application use Redis as a cache?",
+      "reference_answer": "Caching reduces latency and database load but introduces staleness. In cache-aside, read the cache, load from the source on miss and set a TTL; invalidate after committed writes. Use request coalescing or bounded locks, TTL jitter, stale-while-revalidate and monitoring. The database remains the source of truth.",
+      "rubric": [
+        "Explain staleness and invalidation",
+        "Address cache misses and concurrent regeneration"
+      ]
+    },
+    {
+      "id": "tech-redis-cache-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "redis",
+        "cache",
+        "performance"
+      ],
+      "question": "How would you invalidate a cached database record after an update?",
+      "reference_answer": "Caching reduces latency and database load but introduces staleness. In cache-aside, read the cache, load from the source on miss and set a TTL; invalidate after committed writes. Use request coalescing or bounded locks, TTL jitter, stale-while-revalidate and monitoring. The database remains the source of truth.",
+      "rubric": [
+        "Explain staleness and invalidation",
+        "Address cache misses and concurrent regeneration"
+      ]
+    },
+    {
+      "id": "tech-redis-cache-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "redis",
+        "cache",
+        "performance"
+      ],
+      "question": "How would you prevent a cache stampede for a popular expired key?",
+      "reference_answer": "Caching reduces latency and database load but introduces staleness. In cache-aside, read the cache, load from the source on miss and set a TTL; invalidate after committed writes. Use request coalescing or bounded locks, TTL jitter, stale-while-revalidate and monitoring. The database remains the source of truth.",
+      "rubric": [
+        "Explain staleness and invalidation",
+        "Address cache misses and concurrent regeneration"
+      ]
+    },
+    {
+      "id": "tech-redis-deduplication-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "redis",
+        "ttl",
+        "idempotency",
+        "postback"
+      ],
+      "question": "What does TTL mean for a Redis key?",
+      "reference_answer": "TTL controls expiration. Atomically claim a stable event identifier with SET NX and an expiration, rather than separate checks and writes. Choose retention from maximum partner retry and replay windows, memory budget and business risk. A Redis claim alone does not guarantee exactly-once processing; persist durable idempotency state and handle crashes and recovery.",
+      "rubric": [
+        "Use an atomic claim and stable event ID",
+        "Connect TTL to retry windows and durable crash recovery"
+      ]
+    },
+    {
+      "id": "tech-redis-deduplication-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "redis",
+        "ttl",
+        "idempotency",
+        "postback"
+      ],
+      "question": "How would you use Redis to detect duplicate partner postbacks?",
+      "reference_answer": "TTL controls expiration. Atomically claim a stable event identifier with SET NX and an expiration, rather than separate checks and writes. Choose retention from maximum partner retry and replay windows, memory budget and business risk. A Redis claim alone does not guarantee exactly-once processing; persist durable idempotency state and handle crashes and recovery.",
+      "rubric": [
+        "Use an atomic claim and stable event ID",
+        "Connect TTL to retry windows and durable crash recovery"
+      ]
+    },
+    {
+      "id": "tech-redis-deduplication-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "redis",
+        "ttl",
+        "idempotency",
+        "postback"
+      ],
+      "question": "How would you choose a deduplication TTL and handle a crash after claiming a key?",
+      "reference_answer": "TTL controls expiration. Atomically claim a stable event identifier with SET NX and an expiration, rather than separate checks and writes. Choose retention from maximum partner retry and replay windows, memory budget and business risk. A Redis claim alone does not guarantee exactly-once processing; persist durable idempotency state and handle crashes and recovery.",
+      "rubric": [
+        "Use an atomic claim and stable event ID",
+        "Connect TTL to retry windows and durable crash recovery"
+      ]
+    },
+    {
+      "id": "tech-rest-api-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "rest",
+        "api",
+        "http"
+      ],
+      "question": "What do common HTTP methods express in a REST API?",
+      "reference_answer": "GET reads, POST generally creates or performs an action, PUT replaces and PATCH partially updates; DELETE removes. GET, PUT and DELETE are intended to be idempotent. Validate inputs, use meaningful status codes and a consistent error shape. Bound pagination, document contracts and roll out additive changes or version incompatible changes with deprecation.",
+      "rubric": [
+        "Use HTTP semantics and status codes appropriately",
+        "Explain bounded pagination or contract compatibility"
+      ]
+    },
+    {
+      "id": "tech-rest-api-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "rest",
+        "api",
+        "http"
+      ],
+      "question": "How would you design a paginated list endpoint with predictable errors?",
+      "reference_answer": "GET reads, POST generally creates or performs an action, PUT replaces and PATCH partially updates; DELETE removes. GET, PUT and DELETE are intended to be idempotent. Validate inputs, use meaningful status codes and a consistent error shape. Bound pagination, document contracts and roll out additive changes or version incompatible changes with deprecation.",
+      "rubric": [
+        "Use HTTP semantics and status codes appropriately",
+        "Explain bounded pagination or contract compatibility"
+      ]
+    },
+    {
+      "id": "tech-rest-api-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "rest",
+        "api",
+        "http"
+      ],
+      "question": "How would you evolve a public API without breaking existing clients?",
+      "reference_answer": "GET reads, POST generally creates or performs an action, PUT replaces and PATCH partially updates; DELETE removes. GET, PUT and DELETE are intended to be idempotent. Validate inputs, use meaningful status codes and a consistent error shape. Bound pagination, document contracts and roll out additive changes or version incompatible changes with deprecation.",
+      "rubric": [
+        "Use HTTP semantics and status codes appropriately",
+        "Explain bounded pagination or contract compatibility"
+      ]
+    },
+    {
+      "id": "tech-jwt-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "jwt",
+        "authentication",
+        "api",
+        "security"
+      ],
+      "question": "What is a JWT and what does its signature protect?",
+      "reference_answer": "A JWT is a signed claim container, not encryption by default. Verify the signature against trusted keys, explicitly restrict algorithms and validate expiry, issuer and audience. Use short-lived access tokens, protected refresh tokens with rotation and reuse detection, and revocation or token-version checks when required. Avoid exposing secrets in claims.",
+      "rubric": [
+        "Distinguish signing from encryption",
+        "Validate claims and discuss token lifecycle"
+      ]
+    },
+    {
+      "id": "tech-jwt-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "jwt",
+        "authentication",
+        "api",
+        "security"
+      ],
+      "question": "How would you validate an access token on a protected endpoint?",
+      "reference_answer": "A JWT is a signed claim container, not encryption by default. Verify the signature against trusted keys, explicitly restrict algorithms and validate expiry, issuer and audience. Use short-lived access tokens, protected refresh tokens with rotation and reuse detection, and revocation or token-version checks when required. Avoid exposing secrets in claims.",
+      "rubric": [
+        "Distinguish signing from encryption",
+        "Validate claims and discuss token lifecycle"
+      ]
+    },
+    {
+      "id": "tech-jwt-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "jwt",
+        "authentication",
+        "api",
+        "security"
+      ],
+      "question": "How would you design token rotation and revocation after account compromise?",
+      "reference_answer": "A JWT is a signed claim container, not encryption by default. Verify the signature against trusted keys, explicitly restrict algorithms and validate expiry, issuer and audience. Use short-lived access tokens, protected refresh tokens with rotation and reuse detection, and revocation or token-version checks when required. Avoid exposing secrets in claims.",
+      "rubric": [
+        "Distinguish signing from encryption",
+        "Validate claims and discuss token lifecycle"
+      ]
+    },
+    {
+      "id": "tech-authorization-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "authentication",
+        "authorization",
+        "security",
+        "api"
+      ],
+      "question": "How do authentication and authorization differ?",
+      "reference_answer": "Authentication establishes identity; authorization decides permitted actions. Filter object queries by the authenticated owner or tenant and enforce permissions on every endpoint. Apply least privilege consistently in services, jobs and storage. Test cross-user access and do not trust client-supplied owner or tenant identifiers.",
+      "rubric": [
+        "Explain identity versus access",
+        "Enforce ownership and test cross-user isolation"
+      ]
+    },
+    {
+      "id": "tech-authorization-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "authentication",
+        "authorization",
+        "security",
+        "api"
+      ],
+      "question": "How would you stop a logged-in user from reading another user's interview?",
+      "reference_answer": "Authentication establishes identity; authorization decides permitted actions. Filter object queries by the authenticated owner or tenant and enforce permissions on every endpoint. Apply least privilege consistently in services, jobs and storage. Test cross-user access and do not trust client-supplied owner or tenant identifiers.",
+      "rubric": [
+        "Explain identity versus access",
+        "Enforce ownership and test cross-user isolation"
+      ]
+    },
+    {
+      "id": "tech-authorization-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "authentication",
+        "authorization",
+        "security",
+        "api"
+      ],
+      "question": "How would you enforce tenant isolation across APIs and background jobs?",
+      "reference_answer": "Authentication establishes identity; authorization decides permitted actions. Filter object queries by the authenticated owner or tenant and enforce permissions on every endpoint. Apply least privilege consistently in services, jobs and storage. Test cross-user access and do not trust client-supplied owner or tenant identifiers.",
+      "rubric": [
+        "Explain identity versus access",
+        "Enforce ownership and test cross-user isolation"
+      ]
+    },
+    {
+      "id": "tech-web-security-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "security",
+        "api",
+        "sql",
+        "xss",
+        "csrf"
+      ],
+      "question": "How do parameterized queries help prevent SQL injection?",
+      "reference_answer": "Parameterized queries keep values separate from query structure; validate dynamic identifiers separately. Use context-appropriate output encoding and safe rendering for XSS. CSRF protections apply especially to automatically sent credentials such as cookies; use tokens and suitable cookie settings. Reproduce with synthetic inputs, fix the root cause and verify logs and regression tests without logging secrets.",
+      "rubric": [
+        "Describe query parameterization and safe output handling",
+        "Distinguish credential handling and protect sensitive data"
+      ]
+    },
+    {
+      "id": "tech-web-security-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "security",
+        "api",
+        "sql",
+        "xss",
+        "csrf"
+      ],
+      "question": "How would you protect a browser application against XSS and CSRF?",
+      "reference_answer": "Parameterized queries keep values separate from query structure; validate dynamic identifiers separately. Use context-appropriate output encoding and safe rendering for XSS. CSRF protections apply especially to automatically sent credentials such as cookies; use tokens and suitable cookie settings. Reproduce with synthetic inputs, fix the root cause and verify logs and regression tests without logging secrets.",
+      "rubric": [
+        "Describe query parameterization and safe output handling",
+        "Distinguish credential handling and protect sensitive data"
+      ]
+    },
+    {
+      "id": "tech-web-security-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "security",
+        "api",
+        "sql",
+        "xss",
+        "csrf"
+      ],
+      "question": "How would you investigate a suspected injection vulnerability without exposing user data?",
+      "reference_answer": "Parameterized queries keep values separate from query structure; validate dynamic identifiers separately. Use context-appropriate output encoding and safe rendering for XSS. CSRF protections apply especially to automatically sent credentials such as cookies; use tokens and suitable cookie settings. Reproduce with synthetic inputs, fix the root cause and verify logs and regression tests without logging secrets.",
+      "rubric": [
+        "Describe query parameterization and safe output handling",
+        "Distinguish credential handling and protect sensitive data"
+      ]
+    },
+    {
+      "id": "tech-testing-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "testing",
+        "unit",
+        "integration",
+        "api"
+      ],
+      "question": "What is the difference between unit and integration tests?",
+      "reference_answer": "Unit tests isolate small behavior; integration tests exercise real boundaries. Use provider sandboxes or controlled fakes and synthetic data. Cover validation, ownership, idempotency, timeouts, retries and failure paths. Test concurrent operations with realistic database behavior and assert business invariants, not just implementation details.",
+      "rubric": [
+        "Choose tests for meaningful boundaries",
+        "Cover error paths, concurrency and invariants"
+      ]
+    },
+    {
+      "id": "tech-testing-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "testing",
+        "unit",
+        "integration",
+        "api"
+      ],
+      "question": "How would you test a payment API without charging real customers?",
+      "reference_answer": "Unit tests isolate small behavior; integration tests exercise real boundaries. Use provider sandboxes or controlled fakes and synthetic data. Cover validation, ownership, idempotency, timeouts, retries and failure paths. Test concurrent operations with realistic database behavior and assert business invariants, not just implementation details.",
+      "rubric": [
+        "Choose tests for meaningful boundaries",
+        "Cover error paths, concurrency and invariants"
+      ]
+    },
+    {
+      "id": "tech-testing-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "testing",
+        "unit",
+        "integration",
+        "api"
+      ],
+      "question": "How would you make tests catch race conditions and partial service failures?",
+      "reference_answer": "Unit tests isolate small behavior; integration tests exercise real boundaries. Use provider sandboxes or controlled fakes and synthetic data. Cover validation, ownership, idempotency, timeouts, retries and failure paths. Test concurrent operations with realistic database behavior and assert business invariants, not just implementation details.",
+      "rubric": [
+        "Choose tests for meaningful boundaries",
+        "Cover error paths, concurrency and invariants"
+      ]
+    },
+    {
+      "id": "tech-async-processing-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "async",
+        "python",
+        "performance"
+      ],
+      "question": "How do I/O-bound and CPU-bound work differ?",
+      "reference_answer": "I/O-bound tasks wait on external operations; CPU-bound tasks compute. Async I/O improves concurrency when libraries are non-blocking, but CPU work still needs appropriate workers. Bound in-flight work with semaphores or queues, apply timeouts and backpressure, propagate cancellation and clean up resources. Monitor throughput and tail latency.",
+      "rubric": [
+        "Distinguish waiting from computation",
+        "Explain bounded concurrency and cancellation"
+      ]
+    },
+    {
+      "id": "tech-async-processing-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "async",
+        "python",
+        "performance"
+      ],
+      "question": "When would you use asynchronous I/O in a Python service?",
+      "reference_answer": "I/O-bound tasks wait on external operations; CPU-bound tasks compute. Async I/O improves concurrency when libraries are non-blocking, but CPU work still needs appropriate workers. Bound in-flight work with semaphores or queues, apply timeouts and backpressure, propagate cancellation and clean up resources. Monitor throughput and tail latency.",
+      "rubric": [
+        "Distinguish waiting from computation",
+        "Explain bounded concurrency and cancellation"
+      ]
+    },
+    {
+      "id": "tech-async-processing-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "async",
+        "python",
+        "performance"
+      ],
+      "question": "How would you limit concurrency and handle cancellation in an asynchronous pipeline?",
+      "reference_answer": "I/O-bound tasks wait on external operations; CPU-bound tasks compute. Async I/O improves concurrency when libraries are non-blocking, but CPU work still needs appropriate workers. Bound in-flight work with semaphores or queues, apply timeouts and backpressure, propagate cancellation and clean up resources. Monitor throughput and tail latency.",
+      "rubric": [
+        "Distinguish waiting from computation",
+        "Explain bounded concurrency and cancellation"
+      ]
+    },
+    {
+      "id": "tech-message-queues-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "queue",
+        "workers",
+        "reliability"
+      ],
+      "question": "Why would a service use a message queue?",
+      "reference_answer": "Queues decouple work and absorb bursts, with eventual processing. Assume duplicates under at-least-once delivery and make consumers idempotent. Acknowledge after durable work, retry transient errors with limits and backoff, and quarantine poison messages. Use ordering keys, sequence numbers or explicit state transitions where order matters.",
+      "rubric": [
+        "Explain delivery and acknowledgement semantics",
+        "Handle duplicates, retries and ordering"
+      ]
+    },
+    {
+      "id": "tech-message-queues-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "queue",
+        "workers",
+        "reliability"
+      ],
+      "question": "How would you safely retry a failed background job?",
+      "reference_answer": "Queues decouple work and absorb bursts, with eventual processing. Assume duplicates under at-least-once delivery and make consumers idempotent. Acknowledge after durable work, retry transient errors with limits and backoff, and quarantine poison messages. Use ordering keys, sequence numbers or explicit state transitions where order matters.",
+      "rubric": [
+        "Explain delivery and acknowledgement semantics",
+        "Handle duplicates, retries and ordering"
+      ]
+    },
+    {
+      "id": "tech-message-queues-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "queue",
+        "workers",
+        "reliability"
+      ],
+      "question": "How would you handle out-of-order and duplicate events in a queue consumer?",
+      "reference_answer": "Queues decouple work and absorb bursts, with eventual processing. Assume duplicates under at-least-once delivery and make consumers idempotent. Acknowledge after durable work, retry transient errors with limits and backoff, and quarantine poison messages. Use ordering keys, sequence numbers or explicit state transitions where order matters.",
+      "rubric": [
+        "Explain delivery and acknowledgement semantics",
+        "Handle duplicates, retries and ordering"
+      ]
+    },
+    {
+      "id": "tech-docker-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "docker",
+        "containers",
+        "deployment"
+      ],
+      "question": "How does a container differ from a virtual machine?",
+      "reference_answer": "Containers isolate processes while sharing the host kernel; virtual machines have separate guest kernels. Use a suitable pinned base, multi-stage builds where useful, minimal dependencies, a non-root user and runtime secrets. Diagnose memory with limits, process metrics and workload traces; distinguish leaks from legitimate growth and verify fixes under load.",
+      "rubric": [
+        "Explain container isolation and image design",
+        "Use measured resource limits and runtime diagnostics"
+      ]
+    },
+    {
+      "id": "tech-docker-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "docker",
+        "containers",
+        "deployment"
+      ],
+      "question": "How would you package a Python API in a small Docker image?",
+      "reference_answer": "Containers isolate processes while sharing the host kernel; virtual machines have separate guest kernels. Use a suitable pinned base, multi-stage builds where useful, minimal dependencies, a non-root user and runtime secrets. Diagnose memory with limits, process metrics and workload traces; distinguish leaks from legitimate growth and verify fixes under load.",
+      "rubric": [
+        "Explain container isolation and image design",
+        "Use measured resource limits and runtime diagnostics"
+      ]
+    },
+    {
+      "id": "tech-docker-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "docker",
+        "containers",
+        "deployment"
+      ],
+      "question": "How would you diagnose a container that runs out of memory in production?",
+      "reference_answer": "Containers isolate processes while sharing the host kernel; virtual machines have separate guest kernels. Use a suitable pinned base, multi-stage builds where useful, minimal dependencies, a non-root user and runtime secrets. Diagnose memory with limits, process metrics and workload traces; distinguish leaks from legitimate growth and verify fixes under load.",
+      "rubric": [
+        "Explain container isolation and image design",
+        "Use measured resource limits and runtime diagnostics"
+      ]
+    },
+    {
+      "id": "tech-observability-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "logging",
+        "metrics",
+        "tracing",
+        "performance"
+      ],
+      "question": "How do logs, metrics and traces help diagnose a service?",
+      "reference_answer": "Logs capture events, metrics summarize trends and traces connect spans across services. Compare latency percentiles, error rates and traffic; correlate deployments, database timing and downstream calls. Use request IDs without logging secrets. Set actionable alerts from service objectives, suitable windows and runbooks, and review false positives.",
+      "rubric": [
+        "Correlate evidence across service boundaries",
+        "Use user-impact metrics and actionable alerts"
+      ]
+    },
+    {
+      "id": "tech-observability-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "logging",
+        "metrics",
+        "tracing",
+        "performance"
+      ],
+      "question": "How would you investigate a sudden increase in API latency?",
+      "reference_answer": "Logs capture events, metrics summarize trends and traces connect spans across services. Compare latency percentiles, error rates and traffic; correlate deployments, database timing and downstream calls. Use request IDs without logging secrets. Set actionable alerts from service objectives, suitable windows and runbooks, and review false positives.",
+      "rubric": [
+        "Correlate evidence across service boundaries",
+        "Use user-impact metrics and actionable alerts"
+      ]
+    },
+    {
+      "id": "tech-observability-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "logging",
+        "metrics",
+        "tracing",
+        "performance"
+      ],
+      "question": "How would you design alerts that detect real user impact without excessive noise?",
+      "reference_answer": "Logs capture events, metrics summarize trends and traces connect spans across services. Compare latency percentiles, error rates and traffic; correlate deployments, database timing and downstream calls. Use request IDs without logging secrets. Set actionable alerts from service objectives, suitable windows and runbooks, and review false positives.",
+      "rubric": [
+        "Correlate evidence across service boundaries",
+        "Use user-impact metrics and actionable alerts"
+      ]
+    },
+    {
+      "id": "tech-react-state-easy",
+      "interview_type": "technical",
+      "difficulty": "easy",
+      "tags": [
+        "react",
+        "javascript",
+        "frontend"
+      ],
+      "question": "What is the difference between props and state in React?",
+      "reference_answer": "Props are parent inputs and state is component-managed data. Update state immutably. Cancel obsolete requests or verify a request ID before accepting results, and clean up effects. Inspect profiling data, dependencies and stale closures; use functional updates and appropriate memoization only where measured. Keep the source of truth clear.",
+      "rubric": [
+        "Explain state ownership and effect cleanup",
+        "Handle stale requests or closures using explicit sequencing"
+      ]
+    },
+    {
+      "id": "tech-react-state-medium",
+      "interview_type": "technical",
+      "difficulty": "medium",
+      "tags": [
+        "react",
+        "javascript",
+        "frontend"
+      ],
+      "question": "How would you prevent an old search response from overwriting a newer result?",
+      "reference_answer": "Props are parent inputs and state is component-managed data. Update state immutably. Cancel obsolete requests or verify a request ID before accepting results, and clean up effects. Inspect profiling data, dependencies and stale closures; use functional updates and appropriate memoization only where measured. Keep the source of truth clear.",
+      "rubric": [
+        "Explain state ownership and effect cleanup",
+        "Handle stale requests or closures using explicit sequencing"
+      ]
+    },
+    {
+      "id": "tech-react-state-hard",
+      "interview_type": "technical",
+      "difficulty": "hard",
+      "tags": [
+        "react",
+        "javascript",
+        "frontend"
+      ],
+      "question": "How would you diagnose excessive rendering and stale closures in a React page?",
+      "reference_answer": "Props are parent inputs and state is component-managed data. Update state immutably. Cancel obsolete requests or verify a request ID before accepting results, and clean up effects. Inspect profiling data, dependencies and stale closures; use functional updates and appropriate memoization only where measured. Keep the source of truth clear.",
+      "rubric": [
+        "Explain state ownership and effect cleanup",
+        "Handle stale requests or closures using explicit sequencing"
+      ]
+    },
+    {
+      "id": "hr-teamwork-easy",
+      "interview_type": "hr",
+      "difficulty": "easy",
+      "tags": [
+        "teamwork",
+        "collaboration"
+      ],
+      "question": "What makes communication effective in a team?",
+      "reference_answer": "Use a real example if available: explain the shared goal, listen to concerns, compare evidence and agree on a decision and owner. Describe your own actions and the outcome. For cross-team conflicts, clarify constraints and decision authority, document tradeoffs and escalate constructively when needed.",
+      "rubric": [
+        "Describe specific actions and respectful communication",
+        "Explain the outcome or a realistic decision process"
+      ]
+    },
+    {
+      "id": "hr-teamwork-medium",
+      "interview_type": "hr",
+      "difficulty": "medium",
+      "tags": [
+        "teamwork",
+        "collaboration"
+      ],
+      "question": "Tell me about a disagreement with a teammate and how you resolved it?",
+      "reference_answer": "Use a real example if available: explain the shared goal, listen to concerns, compare evidence and agree on a decision and owner. Describe your own actions and the outcome. For cross-team conflicts, clarify constraints and decision authority, document tradeoffs and escalate constructively when needed.",
+      "rubric": [
+        "Describe specific actions and respectful communication",
+        "Explain the outcome or a realistic decision process"
+      ]
+    },
+    {
+      "id": "hr-teamwork-hard",
+      "interview_type": "hr",
+      "difficulty": "hard",
+      "tags": [
+        "teamwork",
+        "collaboration"
+      ],
+      "question": "How would you resolve a disagreement between teams with conflicting delivery goals?",
+      "reference_answer": "Use a real example if available: explain the shared goal, listen to concerns, compare evidence and agree on a decision and owner. Describe your own actions and the outcome. For cross-team conflicts, clarify constraints and decision authority, document tradeoffs and escalate constructively when needed.",
+      "rubric": [
+        "Describe specific actions and respectful communication",
+        "Explain the outcome or a realistic decision process"
+      ]
+    },
+    {
+      "id": "hr-ownership-easy",
+      "interview_type": "hr",
+      "difficulty": "easy",
+      "tags": [
+        "ownership",
+        "incident",
+        "responsibility"
+      ],
+      "question": "What does taking ownership of a task mean to you?",
+      "reference_answer": "Ownership includes clarifying expectations, communicating risks, completing follow-through and learning. Describe a truthful situation, your responsibility, corrective action and outcome. During an incident prioritize recovery, communicate facts and use a blameless review to improve systems while assigning concrete follow-up owners.",
+      "rubric": [
+        "Acknowledge responsibility without inventing experience",
+        "Show corrective action, learning and follow-through"
+      ]
+    },
+    {
+      "id": "hr-ownership-medium",
+      "interview_type": "hr",
+      "difficulty": "medium",
+      "tags": [
+        "ownership",
+        "incident",
+        "responsibility"
+      ],
+      "question": "Describe a mistake you made at work and what you changed afterward?",
+      "reference_answer": "Ownership includes clarifying expectations, communicating risks, completing follow-through and learning. Describe a truthful situation, your responsibility, corrective action and outcome. During an incident prioritize recovery, communicate facts and use a blameless review to improve systems while assigning concrete follow-up owners.",
+      "rubric": [
+        "Acknowledge responsibility without inventing experience",
+        "Show corrective action, learning and follow-through"
+      ]
+    },
+    {
+      "id": "hr-ownership-hard",
+      "interview_type": "hr",
+      "difficulty": "hard",
+      "tags": [
+        "ownership",
+        "incident",
+        "responsibility"
+      ],
+      "question": "How would you balance accountability and a blameless review after a serious incident?",
+      "reference_answer": "Ownership includes clarifying expectations, communicating risks, completing follow-through and learning. Describe a truthful situation, your responsibility, corrective action and outcome. During an incident prioritize recovery, communicate facts and use a blameless review to improve systems while assigning concrete follow-up owners.",
+      "rubric": [
+        "Acknowledge responsibility without inventing experience",
+        "Show corrective action, learning and follow-through"
+      ]
+    },
+    {
+      "id": "hr-prioritization-easy",
+      "interview_type": "hr",
+      "difficulty": "easy",
+      "tags": [
+        "prioritization",
+        "planning",
+        "stakeholders"
+      ],
+      "question": "How do you decide which task to work on first?",
+      "reference_answer": "Compare user impact, urgency, dependencies, effort and risk. Clarify expectations with stakeholders rather than silently overcommitting. Propose sequencing, reduced scope or deadline changes with evidence, identify owners and revisit the plan. Communicate consequences and track the agreed outcome.",
+      "rubric": [
+        "Compare priorities using explicit constraints",
+        "Communicate tradeoffs and negotiate a feasible plan"
+      ]
+    },
+    {
+      "id": "hr-prioritization-medium",
+      "interview_type": "hr",
+      "difficulty": "medium",
+      "tags": [
+        "prioritization",
+        "planning",
+        "stakeholders"
+      ],
+      "question": "How would you handle two urgent requests with the same deadline?",
+      "reference_answer": "Compare user impact, urgency, dependencies, effort and risk. Clarify expectations with stakeholders rather than silently overcommitting. Propose sequencing, reduced scope or deadline changes with evidence, identify owners and revisit the plan. Communicate consequences and track the agreed outcome.",
+      "rubric": [
+        "Compare priorities using explicit constraints",
+        "Communicate tradeoffs and negotiate a feasible plan"
+      ]
+    },
+    {
+      "id": "hr-prioritization-hard",
+      "interview_type": "hr",
+      "difficulty": "hard",
+      "tags": [
+        "prioritization",
+        "planning",
+        "stakeholders"
+      ],
+      "question": "How would you renegotiate scope when a critical dependency threatens a committed deadline?",
+      "reference_answer": "Compare user impact, urgency, dependencies, effort and risk. Clarify expectations with stakeholders rather than silently overcommitting. Propose sequencing, reduced scope or deadline changes with evidence, identify owners and revisit the plan. Communicate consequences and track the agreed outcome.",
+      "rubric": [
+        "Compare priorities using explicit constraints",
+        "Communicate tradeoffs and negotiate a feasible plan"
+      ]
+    },
+    {
+      "id": "project-architecture-easy",
+      "interview_type": "project",
+      "difficulty": "easy",
+      "tags": [
+        "architecture",
+        "project",
+        "design"
+      ],
+      "question": "What problem does your latest project solve?",
+      "reference_answer": "Describe the actual users, problem and constraints of your project. Explain component responsibilities and data flow, alternatives considered and the reasons for your choices. For higher traffic identify the bottleneck through measurement, consider scaling and consistency tradeoffs and define how success would be verified. Do not invent technologies or metrics.",
+      "rubric": [
+        "Ground the answer in an actual project or clearly marked hypothetical",
+        "Connect design decisions to constraints and evidence"
+      ]
+    },
+    {
+      "id": "project-architecture-medium",
+      "interview_type": "project",
+      "difficulty": "medium",
+      "tags": [
+        "architecture",
+        "project",
+        "design"
+      ],
+      "question": "How did you decide on the main components of your project?",
+      "reference_answer": "Describe the actual users, problem and constraints of your project. Explain component responsibilities and data flow, alternatives considered and the reasons for your choices. For higher traffic identify the bottleneck through measurement, consider scaling and consistency tradeoffs and define how success would be verified. Do not invent technologies or metrics.",
+      "rubric": [
+        "Ground the answer in an actual project or clearly marked hypothetical",
+        "Connect design decisions to constraints and evidence"
+      ]
+    },
+    {
+      "id": "project-architecture-hard",
+      "interview_type": "project",
+      "difficulty": "hard",
+      "tags": [
+        "architecture",
+        "project",
+        "design"
+      ],
+      "question": "Which architectural decision would you revisit if your project traffic increased tenfold?",
+      "reference_answer": "Describe the actual users, problem and constraints of your project. Explain component responsibilities and data flow, alternatives considered and the reasons for your choices. For higher traffic identify the bottleneck through measurement, consider scaling and consistency tradeoffs and define how success would be verified. Do not invent technologies or metrics.",
+      "rubric": [
+        "Ground the answer in an actual project or clearly marked hypothetical",
+        "Connect design decisions to constraints and evidence"
+      ]
+    },
+    {
+      "id": "project-deployment-easy",
+      "interview_type": "project",
+      "difficulty": "easy",
+      "tags": [
+        "project",
+        "deployment",
+        "rollback",
+        "testing"
+      ],
+      "question": "How do you check that a project change works before releasing it?",
+      "reference_answer": "Use relevant tests and a staging environment with synthetic data. Design backward-compatible changes and a gradual rollout with observability. Plan a rollback or forward fix before release, separate irreversible data changes, track compatibility across versions and verify both recovery and data integrity.",
+      "rubric": [
+        "Explain verification and release sequencing",
+        "Address compatibility, rollback and data integrity"
+      ]
+    },
+    {
+      "id": "project-deployment-medium",
+      "interview_type": "project",
+      "difficulty": "medium",
+      "tags": [
+        "project",
+        "deployment",
+        "rollback",
+        "testing"
+      ],
+      "question": "Describe how you would release a risky database change for your project?",
+      "reference_answer": "Use relevant tests and a staging environment with synthetic data. Design backward-compatible changes and a gradual rollout with observability. Plan a rollback or forward fix before release, separate irreversible data changes, track compatibility across versions and verify both recovery and data integrity.",
+      "rubric": [
+        "Explain verification and release sequencing",
+        "Address compatibility, rollback and data integrity"
+      ]
+    },
+    {
+      "id": "project-deployment-hard",
+      "interview_type": "project",
+      "difficulty": "hard",
+      "tags": [
+        "project",
+        "deployment",
+        "rollback",
+        "testing"
+      ],
+      "question": "How would you recover from a release that partly succeeds across several services?",
+      "reference_answer": "Use relevant tests and a staging environment with synthetic data. Design backward-compatible changes and a gradual rollout with observability. Plan a rollback or forward fix before release, separate irreversible data changes, track compatibility across versions and verify both recovery and data integrity.",
+      "rubric": [
+        "Explain verification and release sequencing",
+        "Address compatibility, rollback and data integrity"
+      ]
+    },
+    {
+      "id": "project-performance-easy",
+      "interview_type": "project",
+      "difficulty": "easy",
+      "tags": [
+        "project",
+        "performance",
+        "debugging"
+      ],
+      "question": "How would you measure whether your project is fast enough?",
+      "reference_answer": "Define workload and user-facing latency or throughput goals. Establish a baseline and instrument the actual request path. Profile likely bottlenecks, change one justified factor and repeat a representative test. Compare percentiles, errors and resource usage rather than averages alone; document tradeoffs and monitor after rollout.",
+      "rubric": [
+        "Use representative measurements and a baseline",
+        "Verify improvement without hiding errors or resource costs"
+      ]
+    },
+    {
+      "id": "project-performance-medium",
+      "interview_type": "project",
+      "difficulty": "medium",
+      "tags": [
+        "project",
+        "performance",
+        "debugging"
+      ],
+      "question": "Describe how you would investigate a performance bottleneck in your project?",
+      "reference_answer": "Define workload and user-facing latency or throughput goals. Establish a baseline and instrument the actual request path. Profile likely bottlenecks, change one justified factor and repeat a representative test. Compare percentiles, errors and resource usage rather than averages alone; document tradeoffs and monitor after rollout.",
+      "rubric": [
+        "Use representative measurements and a baseline",
+        "Verify improvement without hiding errors or resource costs"
+      ]
+    },
+    {
+      "id": "project-performance-hard",
+      "interview_type": "project",
+      "difficulty": "hard",
+      "tags": [
+        "project",
+        "performance",
+        "debugging"
+      ],
+      "question": "How would you prove that a performance change improves tail latency under production-like load?",
+      "reference_answer": "Define workload and user-facing latency or throughput goals. Establish a baseline and instrument the actual request path. Profile likely bottlenecks, change one justified factor and repeat a representative test. Compare percentiles, errors and resource usage rather than averages alone; document tradeoffs and monitor after rollout.",
+      "rubric": [
+        "Use representative measurements and a baseline",
+        "Verify improvement without hiding errors or resource costs"
+      ]
+    }
+  ]
+}

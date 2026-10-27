@@ -1,0 +1,1 @@
+# BurnettSuite integration tests package
