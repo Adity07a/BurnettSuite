@@ -1,0 +1,51 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Execute Deployment Commands on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "Pulling latest code from GitHub..."
+            cd ~/AI_Interview_Platform
+
+            # Authenticated pull using GitHub Actions Token
+            git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/NancyJatav/AI_Interview_Platform.git main
+
+            echo "Updating backend..."
+            cd backend
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+
+            python -m test
+
+            echo "Restarting Gunicorn..."
+            sudo systemctl daemon-reload
+            sudo systemctl restart gunicorn
+
+            echo "Building frontend..."
+            cd ../frontend
+            npm install
+            npm run build
+
+            echo "Restarting Nginx..."
+            sudo systemctl restart nginx
+            echo "Deployment completed successfully!"

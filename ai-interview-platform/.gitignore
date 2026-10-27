@@ -1,0 +1,30 @@
+# Python & Virtual Environment
+venv/
+env/
+backend/venv/
+backend/env/
+__pycache__/
+*.pyc
+
+# Node & Build
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+
+# Database & Media
+*.sqlite3
+db.sqlite3
+backend/db.sqlite3
+media/
+backend/media/
+
+# Secrets & Environment
+.env
+.vscode/
+backend/test.py
+
+# Local tooling and generated voice previews
+.runtime/
+.venv/
+/sample*.mp3

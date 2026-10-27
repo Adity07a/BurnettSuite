@@ -1,0 +1,19 @@
+
+# Environment secrets
+.env
+**/.env
+
+# Python generated files
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+**/.venv/
+
+# Allow safe example configuration files
+!.env.example
+!**/.env.example
+
+.day3_patch_backup/
