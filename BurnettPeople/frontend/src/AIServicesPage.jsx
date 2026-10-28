@@ -269,7 +269,7 @@ export default function AIServicesPage() {
             <button
               type="button"
               className="ais-card-cta ais-card-cta--green"
-              onClick={() => openService(AI_RESUME_URL, "/create-resume")}
+              onClick={() => openService(AI_RESUME_URL, "/dashboard")}
             >
               Create Resume <Icon name="arrow" size={16} />
             </button>
@@ -305,7 +305,7 @@ export default function AIServicesPage() {
             <button
               type="button"
               className="ais-card-cta ais-card-cta--blue"
-              onClick={() => openService(AI_INTERVIEW_URL, "/interview-setup")}
+              onClick={() => openService(AI_INTERVIEW_URL, "/dashboard")}
             >
               Start Interview <Icon name="arrow" size={16} />
             </button>
