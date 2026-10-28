@@ -187,14 +187,24 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         except ValueError as exc:
             raise ValidationError(str(exc)) from exc
 
+        invitation.refresh_from_db()
+
+        if invitation.delivery_status == AccountInvitation.DeliveryStatus.SENT:
+            detail_msg = "Activation invitation email sent successfully."
+        elif invitation.delivery_status == AccountInvitation.DeliveryStatus.FAILED:
+            detail_msg = f"Invitation re-issued, but email delivery failed: {invitation.delivery_error}"
+        else:
+            detail_msg = "A new activation invitation has been queued."
+
         return Response(
             {
-                "detail": "A new activation invitation has been queued.",
+                "detail": detail_msg,
                 "invitation_id": invitation.pk,
                 "delivery_status": invitation.delivery_status,
+                "delivery_error": invitation.delivery_error,
                 "expires_at": invitation.expires_at,
             },
-            status=status.HTTP_202_ACCEPTED,
+            status=status.HTTP_200_OK if invitation.delivery_status == AccountInvitation.DeliveryStatus.SENT else status.HTTP_202_ACCEPTED,
         )
 
     @action(detail=True, methods=["patch"], url_path="employment-status")

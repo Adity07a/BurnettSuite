@@ -1,5 +1,6 @@
 
 import hashlib
+import logging
 import secrets
 from datetime import timedelta
 
@@ -9,6 +10,8 @@ from django.utils import timezone
 from accounts.models import AccountInvitation, User , AuditEvent
 from accounts.tasks import send_account_invitation_email
 from accounts.services.audit import record_audit_event
+
+logger = logging.getLogger(__name__)
 
 @transaction.atomic
 def create_or_resend_invitation(*, user, created_by):
@@ -77,10 +80,25 @@ def create_or_resend_invitation(*, user, created_by):
     # Queue the email only after the database transaction commits.
     # Redact the bearer token from task representations in logs.
     def queue_email():
-        send_account_invitation_email.apply_async(
-            args=(invitation.pk, raw_token),
-            argsrepr=f"({invitation.pk}, '<redacted>')",
-        ) # type: ignore
+        try:
+            send_account_invitation_email.apply_async(
+                args=(invitation.pk, raw_token),
+                argsrepr=f"({invitation.pk}, '<redacted>')",
+            )
+        except Exception as exc:
+            logger.warning(
+                "Celery task dispatch failed for invitation %s: %s. Falling back to direct execution.",
+                invitation.pk,
+                exc,
+            )
+            try:
+                send_account_invitation_email.apply(args=(invitation.pk, raw_token))
+            except Exception as direct_exc:
+                logger.error(
+                    "Direct execution fallback failed for invitation %s: %s",
+                    invitation.pk,
+                    direct_exc,
+                )
 
     transaction.on_commit(queue_email, robust=True)
 

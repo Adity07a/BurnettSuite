@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from accounts.audit_views import AuditEventListView
-from accounts.views import AdminCreateHRView
+from accounts.views import AdminCreateHRView, AdminResendHRInvitationView
 from attendance.reporting_views import AdminDashboardMetricsView
 from core.views import health_check, liveness_check, readiness_check
 from recognition.views import (
@@ -43,6 +43,11 @@ urlpatterns = [
         "api/admin/hr/",
         AdminCreateHRView.as_view(),
         name="admin-create-hr",
+    ),
+    path(
+        "api/admin/hr/<int:user_id>/resend-invitation/",
+        AdminResendHRInvitationView.as_view(),
+        name="admin-resend-hr-invitation",
     ),
     path(
         "api/admin/metrics/",

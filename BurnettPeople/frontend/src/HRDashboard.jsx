@@ -378,6 +378,7 @@ function ComingSoon({ title, text }) {
 function HRDashboard({ user, onLogout }) {
   const name = userDisplayName(user);
   const [section, setSection] = useState("overview");
+  const [aiWorkspaceActive, setAiWorkspaceActive] = useState(false);
   const { employees } = useEmployees();
 
   // Real department counts from employee records.
@@ -423,7 +424,7 @@ function HRDashboard({ user, onLogout }) {
         return <><MyRecognitionSummary /><HRProfile user={user} /></>;
       case "leave":
         return <HRLeave />;
-      case "ai-services": return <AIServicesPage user={user} />;
+      case "ai-services": return <AIServicesPage user={user} onWorkspaceToggle={setAiWorkspaceActive} />;
       default:
         return <ComingSoon title={title} />;
     }
@@ -443,6 +444,8 @@ function HRDashboard({ user, onLogout }) {
       unread={unread}
       homePath="/hr"
       footerLabel="HR workspace"
+      sidebarCollapsed={aiWorkspaceActive && section === "ai-services"}
+      onToggleSidebar={setAiWorkspaceActive}
     >
       {renderPage()}
     </DashboardShell>

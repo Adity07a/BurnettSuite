@@ -1,4 +1,3 @@
-
 from django.db import IntegrityError, transaction
 
 from accounts.models import AuditEvent, User
@@ -23,20 +22,35 @@ def create_hr_account_with_invitation(
     Create an inactive HR account and queue its activation invitation.
 
     The service deliberately does not create an Employee profile.
+    If an inactive HR account already exists with this email,
+    a fresh invitation is re-issued.
     """
     email = email.strip().lower()
     first_name = first_name.strip()
     last_name = last_name.strip()
 
-    if User.objects.filter(email__iexact=email).exists():
-        raise HRAccountEmailAlreadyExists(
-            "This email is already linked to an account."
-        )
-
     if Employee.objects.filter(official_email__iexact=email).exists():
         raise HRAccountEmailAlreadyExists(
             "This email is already used by an employee record."
         )
+
+    existing_user = User.objects.filter(email__iexact=email).first()
+    if existing_user:
+        if existing_user.is_active or existing_user.role != User.Role.HR:
+            raise HRAccountEmailAlreadyExists(
+                "This email is already linked to an account."
+            )
+        if first_name:
+            existing_user.first_name = first_name
+        if last_name:
+            existing_user.last_name = last_name
+        existing_user.save(update_fields=["first_name", "last_name"])
+
+        invitation = create_or_resend_invitation(
+            user=existing_user,
+            created_by=created_by,
+        )
+        return existing_user, invitation
 
     try:
         # Use an inner transaction so a database uniqueness failure does

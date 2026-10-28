@@ -121,6 +121,7 @@ function EmployeeDashboard({ user, onLogout }) {
   const firstName = (name || "").split(" ")[0] || "there";
 
   const [section, setSection] = useState("overview");
+  const [aiWorkspaceActive, setAiWorkspaceActive] = useState(false);
   const [now, setNow] = useState(() => new Date());
 
   const leave = useLeaveData({ balances: true, types: true });
@@ -990,7 +991,7 @@ function EmployeeDashboard({ user, onLogout }) {
       case "requests": return renderRequests();
       case "profile": return <><MyRecognitionSummary />{renderProfile()}</>;
       case "notifications": return renderNotifications();
-      case "ai-services": return <AIServicesPage user={user} />;
+      case "ai-services": return <AIServicesPage user={user} onWorkspaceToggle={setAiWorkspaceActive} />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return renderOverview();
     }
@@ -1012,6 +1013,8 @@ function EmployeeDashboard({ user, onLogout }) {
       unread={unread}
       homePath="/employee"
       footerLabel="Employee workspace"
+      sidebarCollapsed={aiWorkspaceActive && section === "ai-services"}
+      onToggleSidebar={setAiWorkspaceActive}
     >
       {renderPage()}
 

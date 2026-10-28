@@ -1,0 +1,13 @@
+content = open('BurnettPeople/frontend/src/AdminDashboard.jsx', encoding='utf-8').read()
+print('=== AdminDashboard ===')
+print('AIServicesPage import:', 'AIServicesPage' in content)
+print('ai-services in NAV:', 'ai-services' in content)
+print('ai-services in PAGE_META:', '"ai-services"' in content)
+print('ai-services case:', 'case "ai-services"' in content)
+
+content = open('BurnettPeople/frontend/src/EmployeeDashboard.jsx', encoding='utf-8').read()
+print('=== EmployeeDashboard ===')
+print('AIServicesPage import:', 'AIServicesPage' in content)
+print('ai-services in NAV:', 'ai-services' in content)
+print('ai-services in PAGE_META:', '"ai-services"' in content)
+print('ai-services case:', 'case "ai-services"' in content)

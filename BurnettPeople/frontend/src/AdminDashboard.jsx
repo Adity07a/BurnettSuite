@@ -478,6 +478,7 @@ export default function AdminDashboard({ user, onLogout }) {
   const [bellOpen, setBellOpen] = useState(false);
   const [data, setData] = useState(SHOW_DEMO_DATA ? DEMO : null);
   const [workflowRange, setWorkflowRange] = useState("5");
+  const [aiWorkspaceActive, setAiWorkspaceActive] = useState(false);
 
   const displayName = user?.full_name || user?.name || [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "Admin";
   const roleLabel = user?.role ? user.role.charAt(0) + user.role.slice(1).toLowerCase() : "Admin";
@@ -523,105 +524,164 @@ export default function AdminDashboard({ user, onLogout }) {
       case "leave": return <AdminLeave />;
       case "reports": return <AdminReports />;
       case "audit": return <AdminAuditLogs />;
-      case "ai-services": return <AIServicesPage user={user} />;
+      case "ai-services": return <AIServicesPage user={user} onWorkspaceToggle={setAiWorkspaceActive} />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return <ComingSoon title={title} />;
     }
   }
 
+  const isCollapsed = aiWorkspaceActive && section === "ai-services";
+
   return (
     <div className="admin-dashboard">
-      <aside className="admin-sidebar" style={{ backgroundImage: `url(${loginDarkTeal})` }}>
-        <a className="admin-brand" href="/admin" onClick={(e) => { e.preventDefault(); setSection("overview"); }}>
-          <img src={burnettLogo} alt="BurnettPeople" />
-          <span>YOUR PEOPLE. YOUR FUTURE.</span>
-        </a>
-
-        <nav className="admin-nav" aria-label="Admin sections">
-          {NAV.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`admin-nav-link${activeNav === item.id ? " active" : ""}`}
-              aria-current={activeNav === item.id ? "page" : undefined}
-              onClick={() => setSection(item.id)}
-            >
-              <span className="admin-nav-icon"><Icon name={item.icon} size={22} /></span>
-              {item.label}
-              {item.badge && unread > 0 && <span className="admin-nav-badge">{Math.min(unread, 99)}</span>}
-            </button>
-          ))}
-        </nav>
-
-        <div className="admin-sidebar-bottom">
-          <div className="admin-sidebar-tagline">
-            <span>Building better workplaces together.</span>
-            <span className="admin-tagline-arrow"><Icon name="arrow" size={16} /></span>
-          </div>
-          <div className="admin-sidebar-profile">
-            <span className="admin-profile-avatar">{initialsOf(displayName)}</span>
-            <span className="admin-profile-details">
-              <strong>{displayName}</strong>
-              <small>{roleLabel}</small>
-            </span>
-            <span className="admin-online-dot" title="Online" />
-          </div>
-          <button type="button" className="admin-sidebar-logout" onClick={onLogout}>
-            <Icon name="logout" size={18} /> Log out
+      {isCollapsed ? (
+        <aside className="admin-sidebar admin-sidebar--collapsed" style={{ backgroundImage: `url(${loginDarkTeal})` }}>
+          <button
+            type="button"
+            className="admin-sidebar-collapsed-brand"
+            title="BurnettPeople"
+            onClick={() => {
+              setAiWorkspaceActive(false);
+              setSection("overview");
+            }}
+          >
+            B
           </button>
-        </div>
-      </aside>
 
-      <div className="admin-main">
-        <header className="admin-header">
-          <div className="admin-header-heading">
-            <h1>{title}</h1>
-            <p>{subtitle}</p>
-          </div>
-
-          <div className="admin-header-actions">
-            <label className="admin-search">
-              <Icon name="search" size={18} />
-              <input type="search" placeholder="Search employees, schedules, leaves..." aria-label="Search" />
-              <kbd>Ctrl + K</kbd>
-            </label>
-
-            <div className="admin-notification-wrap">
+          <nav className="admin-sidebar-collapsed-nav" aria-label="Collapsed sections">
+            {NAV.map((item) => (
               <button
+                key={item.id}
                 type="button"
-                className="admin-notification-button"
-                onClick={() => setBellOpen((o) => !o)}
-                aria-label="Notifications"
-                aria-expanded={bellOpen}
+                className={`admin-sidebar-collapsed-btn${activeNav === item.id ? " active" : ""}`}
+                title={item.label}
+                onClick={() => {
+                  if (item.id !== "ai-services") {
+                    setAiWorkspaceActive(false);
+                  }
+                  setSection(item.id);
+                }}
               >
-                <Icon name="bell" size={20} />
-                {unread > 0 && <span className="admin-notification-count">{Math.min(unread, 99)}</span>}
+                <Icon name={item.icon} size={20} />
+                {item.badge && unread > 0 && <span className="admin-collapsed-dot" />}
               </button>
-              {bellOpen && (
-                <div className="admin-notification-popover" role="status">
-                  {unread > 0
-                    ? `You have ${unread} items waiting for your action.`
-                    : "You're all caught up."}
-                </div>
-              )}
-            </div>
+            ))}
+          </nav>
 
-            <div className="admin-header-profile">
-              <span className="admin-topbar-avatar">{initialsOf(displayName)}</span>
-              <span className="admin-topbar-user-details">
+          <div style={{ paddingBottom: "12px" }}>
+            <button
+              type="button"
+              className="admin-sidebar-collapsed-btn"
+              title="Log out"
+              onClick={onLogout}
+            >
+              <Icon name="logout" size={18} />
+            </button>
+          </div>
+        </aside>
+      ) : (
+        <aside className="admin-sidebar" style={{ backgroundImage: `url(${loginDarkTeal})` }}>
+          <a className="admin-brand" href="/admin" onClick={(e) => { e.preventDefault(); setSection("overview"); }}>
+            <img src={burnettLogo} alt="BurnettPeople" />
+            <span>YOUR PEOPLE. YOUR FUTURE.</span>
+          </a>
+
+          <nav className="admin-nav" aria-label="Admin sections">
+            {NAV.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`admin-nav-link${activeNav === item.id ? " active" : ""}`}
+                aria-current={activeNav === item.id ? "page" : undefined}
+                onClick={() => setSection(item.id)}
+              >
+                <span className="admin-nav-icon"><Icon name={item.icon} size={22} /></span>
+                {item.label}
+                {item.badge && unread > 0 && <span className="admin-nav-badge">{Math.min(unread, 99)}</span>}
+              </button>
+            ))}
+          </nav>
+
+          <div className="admin-sidebar-bottom">
+            <div className="admin-sidebar-tagline">
+              <span>Building better workplaces together.</span>
+              <span className="admin-tagline-arrow"><Icon name="arrow" size={16} /></span>
+            </div>
+            <div className="admin-sidebar-profile">
+              <span className="admin-profile-avatar">{initialsOf(displayName)}</span>
+              <span className="admin-profile-details">
                 <strong>{displayName}</strong>
                 <small>{roleLabel}</small>
               </span>
+              <span className="admin-online-dot" title="Online" />
             </div>
+            <button type="button" className="admin-sidebar-logout" onClick={onLogout}>
+              <Icon name="logout" size={18} /> Log out
+            </button>
           </div>
-        </header>
+        </aside>
+      )}
 
-        <main className="admin-workspace" style={{ backgroundImage: `url(${loginSoftMint})` }}>
+      <div className={`admin-main${isCollapsed ? " admin-main--collapsed" : ""}`}>
+        {!isCollapsed && (
+          <header className="admin-header">
+            <div className="admin-header-heading">
+              <h1>{title}</h1>
+              <p>{subtitle}</p>
+            </div>
+
+            <div className="admin-header-actions">
+              <label className="admin-search">
+                <Icon name="search" size={18} />
+                <input type="search" placeholder="Search employees, schedules, leaves..." aria-label="Search" />
+                <kbd>Ctrl + K</kbd>
+              </label>
+
+              <div className="admin-notification-wrap">
+                <button
+                  type="button"
+                  className="admin-notification-button"
+                  onClick={() => setBellOpen((o) => !o)}
+                  aria-label="Notifications"
+                  aria-expanded={bellOpen}
+                >
+                  <Icon name="bell" size={20} />
+                  {unread > 0 && <span className="admin-notification-count">{Math.min(unread, 99)}</span>}
+                </button>
+                {bellOpen && (
+                  <div className="admin-notification-popover" role="status">
+                    {unread > 0
+                      ? `You have ${unread} items waiting for your action.`
+                      : "You're all caught up."}
+                  </div>
+                )}
+              </div>
+
+              <div className="admin-header-profile">
+                <span className="admin-topbar-avatar">{initialsOf(displayName)}</span>
+                <span className="admin-topbar-user-details">
+                  <strong>{displayName}</strong>
+                  <small>{roleLabel}</small>
+                </span>
+              </div>
+            </div>
+          </header>
+        )}
+
+        <main
+          className="admin-workspace"
+          style={{
+            backgroundImage: isCollapsed ? "none" : `url(${loginSoftMint})`,
+            padding: isCollapsed ? 0 : undefined,
+          }}
+        >
           {renderPage()}
-          <footer className="admin-footer">
-            <span>© 2026 BurnettPeople</span>
-            <span>Admin workspace</span>
-          </footer>
+          {!isCollapsed && (
+            <footer className="admin-footer">
+              <span>© 2026 BurnettPeople</span>
+              <span>Admin workspace</span>
+            </footer>
+          )}
         </main>
       </div>
 

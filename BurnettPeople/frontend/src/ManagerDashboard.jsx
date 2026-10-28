@@ -190,6 +190,7 @@ export default function ManagerDashboard({ user, onLogout }) {
   const { data: teamData, hasData, loading, error } = useManagerData();
   const notifications = useResource("/notifications/");
   const [section, setSection] = useState("overview");
+  const [aiWorkspaceActive, setAiWorkspaceActive] = useState(false);
 
   /* Leave requests always come from the leave API (never from sample data). */
   const leave = useLeaveData({ teamOnly: true });
@@ -216,7 +217,7 @@ export default function ManagerDashboard({ user, onLogout }) {
       case "reports": return <ReportsPage data={data} />;
       case "profile": return <><MyRecognitionSummary /><ProfilePage user={user} name={name} initials={userInitials(user)} roleText={roleLabel(user?.role)} data={data} /></>;
       case "notifications": return <NotificationsPage notifications={notifications} />;
-      case "ai-services": return <AIServicesPage user={user} />;
+      case "ai-services": return <AIServicesPage user={user} onWorkspaceToggle={setAiWorkspaceActive} />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return <Overview data={data} go={setSection} onDecide={decideLeave} name={name} />;
     }
@@ -236,6 +237,8 @@ export default function ManagerDashboard({ user, onLogout }) {
       unread={notifications.rows.filter((item) => !item.read_at).length}
       homePath="/manager"
       footerLabel="Manager workspace"
+      sidebarCollapsed={aiWorkspaceActive && section === "ai-services"}
+      onToggleSidebar={setAiWorkspaceActive}
     >
       {error && !isLeaveSection && <div role="alert" className="admin-form-error">{error}</div>}
       {leave.errors.requests && (isLeaveSection || section === "overview") && (

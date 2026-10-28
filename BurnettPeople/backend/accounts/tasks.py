@@ -1,4 +1,4 @@
-
+import logging
 from html import escape
 from urllib.parse import quote
 
@@ -7,13 +7,12 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 
-from .models import AccountInvitation , PasswordResetCode
-from accounts.models import AuditEvent
+from accounts.models import AccountInvitation, AuditEvent, PasswordResetCode
 from accounts.services.audit import record_audit_event
 
-import logging
-
 logger = logging.getLogger(__name__)
+
+
 @shared_task(
     bind=True,
     max_retries=3,
@@ -52,10 +51,13 @@ def send_password_reset_code(self, reset_id, raw_code):
             "Password reset email task failed for reset record %s",
             reset_id,
         )
-        raise self.retry(
-            exc=exc,
-            countdown=min(30 * (2 ** self.request.retries), 300),
-        )
+        if self.request.retries < self.max_retries:
+            raise self.retry(
+                exc=exc,
+                countdown=0 if getattr(self.request, "is_eager", False) else min(30 * (2 ** self.request.retries), 300),
+            )
+        raise
+
 
 @shared_task(
     bind=True,
@@ -147,10 +149,9 @@ def send_account_invitation_email(self, invitation_id, raw_token):
                     "updated_at",
                 ]
             )
-
             raise self.retry(
                 exc=exc,
-                countdown=min(
+                countdown=0 if getattr(self.request, "is_eager", False) else min(
                     300,
                     30 * (2 ** self.request.retries),
                 ),
@@ -200,3 +201,5 @@ def send_account_invitation_email(self, invitation_id, raw_token):
     )
 
     return {"status": "sent", "invitation_id": invitation.pk}
+
+

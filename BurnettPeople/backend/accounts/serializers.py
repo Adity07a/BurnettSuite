@@ -123,7 +123,8 @@ class HRAccountCreateSerializer(serializers.Serializer):
     def validate_email(self, value):
         value = value.strip().lower()
 
-        if User.objects.filter(email__iexact=value).exists():
+        existing_user = User.objects.filter(email__iexact=value).first()
+        if existing_user and (existing_user.is_active or existing_user.role != User.Role.HR):
             raise serializers.ValidationError(
                 "This email is already linked to an account."
             )

@@ -982,3 +982,96 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* ==========================================================================
+   BurnettPeople Collapsed Sidebar Rail (Active during AI Services Workspaces)
+   ========================================================================== */
+.admin-dashboard .admin-sidebar.admin-sidebar--collapsed {
+  width: 56px !important;
+  min-width: 56px !important;
+  padding: 16px 0 !important;
+  align-items: center !important;
+  background-color: #002b28 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.18) !important;
+  overflow-x: hidden !important;
+}
+
+.admin-sidebar-collapsed-brand {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #00d084;
+  color: #002b28;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.admin-sidebar-collapsed-brand:hover {
+  transform: scale(1.06);
+}
+
+.admin-sidebar-collapsed-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+  flex: 1;
+}
+
+.admin-sidebar-collapsed-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 0;
+}
+
+.admin-sidebar-collapsed-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.admin-sidebar-collapsed-btn.active {
+  background: #064e43;
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+.admin-collapsed-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.admin-dashboard .admin-main.admin-main--collapsed {
+  margin-left: 56px !important;
+}
+
+.admin-dashboard .admin-main.admin-main--collapsed .admin-workspace {
+  padding: 0 !important;
+  background: none !important;
+}

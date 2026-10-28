@@ -3,6 +3,7 @@ import apiClient from "./api/client";
 import { Icon } from "./DashboardIcons";
 import { getErrorMessage } from "./dashboardUtils";
 import AIResumeWorkspace from "./features/ai-resume/AIResumeWorkspace";
+import AIInterviewWorkspace from "./features/ai-interview/AIInterviewWorkspace";
 import "./AIServices.css";
 
 /* ------------------------------------------------------------------
@@ -119,11 +120,21 @@ function InterviewIllustration() {
 /* ==================================================================
    Main Component
    ================================================================== */
-export default function AIServicesPage({ user }) {
+export default function AIServicesPage({ user, onWorkspaceToggle }) {
   const [stats, setStats] = useState(null);
   const [statsError, setStatsError] = useState("");
   const [showResumeWorkspace, setShowResumeWorkspace] = useState(false);
   const [resumeInitialPage, setResumeInitialPage] = useState("dashboard");
+  const [showInterviewWorkspace, setShowInterviewWorkspace] = useState(false);
+  const [interviewInitialPage, setInterviewInitialPage] = useState("dashboard");
+
+  useEffect(() => {
+    const isAnyActive = showResumeWorkspace || showInterviewWorkspace;
+    onWorkspaceToggle?.(isAnyActive);
+    return () => {
+      onWorkspaceToggle?.(false);
+    };
+  }, [showResumeWorkspace, showInterviewWorkspace, onWorkspaceToggle]);
 
   useEffect(() => {
     let cancelled = false;
@@ -150,13 +161,30 @@ export default function AIServicesPage({ user }) {
     };
   }, []);
 
+  const handleBackToBurnett = () => {
+    setShowResumeWorkspace(false);
+    setShowInterviewWorkspace(false);
+    onWorkspaceToggle?.(false);
+  };
+
   // If the user navigates into the embedded AI Resume Workspace, render it directly
   if (showResumeWorkspace) {
     return (
       <AIResumeWorkspace
         user={user}
         initialPage={resumeInitialPage}
-        onBackToBurnett={() => setShowResumeWorkspace(false)}
+        onBackToBurnett={handleBackToBurnett}
+      />
+    );
+  }
+
+  // If the user navigates into the embedded AI Interview Workspace, render it directly
+  if (showInterviewWorkspace) {
+    return (
+      <AIInterviewWorkspace
+        user={user}
+        initialPage={interviewInitialPage}
+        onBackToBurnett={handleBackToBurnett}
       />
     );
   }
@@ -258,7 +286,8 @@ export default function AIServicesPage({ user }) {
               type="button"
               className="ais-card-cta ais-card-cta--blue"
               onClick={() => {
-                alert("AI Interview Assistant mock interview environment is preparing. You can start by preparing your resume first!");
+                setInterviewInitialPage("dashboard");
+                setShowInterviewWorkspace(true);
               }}
             >
               Start Interview <Icon name="arrow" size={16} />
