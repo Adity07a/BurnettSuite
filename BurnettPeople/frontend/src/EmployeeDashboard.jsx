@@ -990,7 +990,7 @@ function EmployeeDashboard({ user, onLogout }) {
       case "requests": return renderRequests();
       case "profile": return <><MyRecognitionSummary />{renderProfile()}</>;
       case "notifications": return renderNotifications();
-      case "ai-services": return <AIServicesPage />;
+      case "ai-services": return <AIServicesPage user={user} />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return renderOverview();
     }

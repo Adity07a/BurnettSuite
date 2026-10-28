@@ -216,7 +216,7 @@ export default function ManagerDashboard({ user, onLogout }) {
       case "reports": return <ReportsPage data={data} />;
       case "profile": return <><MyRecognitionSummary /><ProfilePage user={user} name={name} initials={userInitials(user)} roleText={roleLabel(user?.role)} data={data} /></>;
       case "notifications": return <NotificationsPage notifications={notifications} />;
-      case "ai-services": return <AIServicesPage />;
+      case "ai-services": return <AIServicesPage user={user} />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return <Overview data={data} go={setSection} onDecide={decideLeave} name={name} />;
     }

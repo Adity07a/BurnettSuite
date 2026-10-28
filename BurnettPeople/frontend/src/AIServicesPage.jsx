@@ -2,20 +2,8 @@ import { useEffect, useState } from "react";
 import apiClient from "./api/client";
 import { Icon } from "./DashboardIcons";
 import { getErrorMessage } from "./dashboardUtils";
+import AIResumeWorkspace from "./features/ai-resume/AIResumeWorkspace";
 import "./AIServices.css";
-
-/* ------------------------------------------------------------------
-   Constants — point these at your deployed service URLs.
-   In development both sub-projects run on separate Vite ports.
-   In production they can be deployed on any origin / path.
-   ------------------------------------------------------------------ */
-const AI_RESUME_URL = (
-  import.meta.env.VITE_AI_RESUME_URL || "http://localhost:5174"
-).replace(/\/$/, "");
-
-const AI_INTERVIEW_URL = (
-  import.meta.env.VITE_AI_INTERVIEW_URL || "http://localhost:5175"
-).replace(/\/$/, "");
 
 /* ------------------------------------------------------------------
    Stat card pulled from the BurnettPeople backend (demo-safe)
@@ -32,21 +20,21 @@ const RECENT_DEMO = [
     id: 1,
     icon: "file",
     text: "You created a new resume",
-    sub: "Software Developer · Oct 26, 2026",
+    sub: "Software Developer &bull; Oct 26, 2026",
     color: "green",
   },
   {
     id: 2,
     icon: "user",
     text: "You completed an interview",
-    sub: "Frontend Developer · Oct 26, 2026",
+    sub: "Frontend Developer &bull; Oct 26, 2026",
     color: "blue",
   },
   {
     id: 3,
     icon: "download",
     text: "You downloaded your resume",
-    sub: "Backend Developer · Oct 24, 2026",
+    sub: "Backend Developer &bull; Oct 24, 2026",
     color: "teal",
   },
 ];
@@ -73,19 +61,10 @@ const WHY_CARDS = [
   {
     icon: "chart",
     color: "purple",
-    title: "Be Future Ready",
-    desc: "Gain skills and prepare for your next opportunity.",
+    title: "Track Progress",
+    desc: "See how your skills and interview scores improve.",
   },
 ];
-
-/* ------------------------------------------------------------------
-   Open external AI service in a new tab.
-   A future enhancement can pass a short-lived SSO token here.
-   ------------------------------------------------------------------ */
-function openService(baseUrl, path = "") {
-  const url = path ? `${baseUrl}${path}` : baseUrl;
-  window.open(url, "_blank", "noopener,noreferrer");
-}
 
 /* ------------------------------------------------------------------
    Hero illustration for Resume Creator card (inline SVG)
@@ -98,24 +77,17 @@ function ResumeIllustration() {
       fill="none"
       aria-hidden="true"
     >
-      {/* Paper */}
-      <rect x="20" y="8" width="80" height="104" rx="6" fill="#e8f9f4" stroke="#1f9d73" strokeWidth="1.2" />
-      {/* Header line */}
-      <rect x="32" y="22" width="40" height="8" rx="3" fill="#1f9d73" />
-      <rect x="32" y="35" width="56" height="5" rx="2.5" fill="#b2e8d8" />
-      {/* Section lines */}
-      <rect x="32" y="50" width="28" height="4" rx="2" fill="#1f9d73" opacity="0.7" />
-      <rect x="32" y="58" width="56" height="3" rx="1.5" fill="#d1f0e8" />
-      <rect x="32" y="64" width="48" height="3" rx="1.5" fill="#d1f0e8" />
-      <rect x="32" y="70" width="52" height="3" rx="1.5" fill="#d1f0e8" />
-      {/* Skills */}
-      <rect x="32" y="82" width="28" height="4" rx="2" fill="#1f9d73" opacity="0.7" />
-      <rect x="32" y="90" width="18" height="7" rx="3.5" fill="#b2e8d8" />
-      <rect x="54" y="90" width="18" height="7" rx="3.5" fill="#b2e8d8" />
-      <rect x="76" y="90" width="18" height="7" rx="3.5" fill="#b2e8d8" />
-      {/* AI badge */}
-      <circle cx="112" cy="30" r="16" fill="#1f9d73" />
-      <text x="112" y="35" textAnchor="middle" fontSize="10" fontWeight="700" fill="white">AI</text>
+      <rect x="25" y="10" width="90" height="100" rx="6" fill="#ecfdf5" stroke="#059669" strokeWidth="2" />
+      <rect x="37" y="24" width="30" height="6" rx="3" fill="#059669" />
+      <rect x="37" y="36" width="66" height="4" rx="2" fill="#a7f3d0" />
+      <rect x="37" y="44" width="56" height="4" rx="2" fill="#a7f3d0" />
+      <rect x="37" y="52" width="60" height="4" rx="2" fill="#a7f3d0" />
+      <line x1="37" y1="64" x2="103" y2="64" stroke="#d1fae5" strokeWidth="2" />
+      <circle cx="50" cy="78" r="8" fill="#059669" />
+      <rect x="64" y="74" width="39" height="4" rx="2" fill="#059669" />
+      <rect x="64" y="82" width="28" height="4" rx="2" fill="#a7f3d0" />
+      <circle cx="95" cy="30" r="14" fill="#059669" opacity="0.15" />
+      <path d="M95 24l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5 1.5-3.5z" fill="#059669" />
     </svg>
   );
 }
@@ -131,91 +103,69 @@ function InterviewIllustration() {
       fill="none"
       aria-hidden="true"
     >
-      {/* Robot head */}
-      <rect x="45" y="20" width="50" height="44" rx="10" fill="#e8f4ff" stroke="#3b82f6" strokeWidth="1.4" />
-      {/* Eyes */}
-      <circle cx="63" cy="38" r="6" fill="#3b82f6" />
-      <circle cx="77" cy="38" r="6" fill="#3b82f6" />
-      <circle cx="65" cy="36" r="2" fill="white" />
-      <circle cx="79" cy="36" r="2" fill="white" />
-      {/* Mouth */}
-      <rect x="58" y="51" width="24" height="4" rx="2" fill="#3b82f6" opacity="0.6" />
-      {/* Antenna */}
-      <line x1="70" y1="20" x2="70" y2="10" stroke="#3b82f6" strokeWidth="1.5" />
-      <circle cx="70" cy="8" r="3" fill="#3b82f6" />
-      {/* Speech bubble */}
-      <rect x="95" y="25" width="36" height="22" rx="6" fill="#3b82f6" />
-      <path d="M95 38 L88 43 L97 38" fill="#3b82f6" />
-      <rect x="101" y="30" width="24" height="3" rx="1.5" fill="white" opacity="0.8" />
-      <rect x="101" y="36" width="18" height="3" rx="1.5" fill="white" opacity="0.8" />
-      {/* Answer bubble */}
-      <rect x="10" y="65" width="58" height="18" rx="6" fill="#e8f4ff" stroke="#3b82f6" strokeWidth="1" />
-      <rect x="16" y="70" width="40" height="3" rx="1.5" fill="#3b82f6" opacity="0.5" />
-      <rect x="16" y="76" width="28" height="3" rx="1.5" fill="#3b82f6" opacity="0.5" />
-      {/* Bottom text */}
-      <text x="70" y="108" textAnchor="middle" fontSize="9" fill="#3b82f6" fontWeight="600">Great answer!</text>
+      <rect x="20" y="20" width="100" height="80" rx="8" fill="#eff6ff" stroke="#2563eb" strokeWidth="2" />
+      <circle cx="50" cy="52" r="14" fill="#2563eb" opacity="0.2" />
+      <circle cx="50" cy="48" r="7" fill="#2563eb" />
+      <path d="M38 66c0-6 6-8 12-8s12 2 12 8" fill="#2563eb" />
+      <rect x="72" y="42" width="38" height="6" rx="3" fill="#2563eb" />
+      <rect x="72" y="52" width="26" height="4" rx="2" fill="#93c5fd" />
+      <rect x="72" y="60" width="32" height="4" rx="2" fill="#93c5fd" />
+      <circle cx="104" cy="84" r="12" fill="#2563eb" />
+      <path d="M100 84l3 3 6-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-/* ------------------------------------------------------------------
-   Stat value card
-   ------------------------------------------------------------------ */
-function StatTile({ icon, label, value, note }) {
-  return (
-    <div className="ais-stat-tile">
-      <span className="ais-stat-icon">
-        <Icon name={icon} size={22} />
-      </span>
-      <div className="ais-stat-body">
-        <p className="ais-stat-label">{label}</p>
-        <strong className="ais-stat-value">{value ?? "—"}</strong>
-        {note && <small className="ais-stat-note">{note}</small>}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------
-   Main AI Services Page
-   ------------------------------------------------------------------ */
-export default function AIServicesPage() {
+/* ==================================================================
+   Main Component
+   ================================================================== */
+export default function AIServicesPage({ user }) {
   const [stats, setStats] = useState(null);
-  const [recent, setRecent] = useState(RECENT_DEMO);
   const [statsError, setStatsError] = useState("");
+  const [showResumeWorkspace, setShowResumeWorkspace] = useState(false);
+  const [resumeInitialPage, setResumeInitialPage] = useState("dashboard");
 
-  /* Attempt to load real stats from BurnettPeople backend.
-     The endpoint /ai-services/stats/ can be added later;
-     if it returns 404 we fall back to demo numbers silently. */
   useEffect(() => {
-    let active = true;
-    apiClient
-      .get("/ai-services/stats/")
-      .then((data) => {
-        if (!active) return;
-        setStats(data);
-        if (Array.isArray(data?.recent_activity)) {
-          setRecent(data.recent_activity);
+    let cancelled = false;
+
+    async function loadStats() {
+      try {
+        const response = await apiClient.get("/ai-services/stats/");
+        if (!cancelled && response?.data) {
+          setStats(response.data);
         }
-        setStatsError("");
-      })
-      .catch((err) => {
-        if (!active) return;
-        // 404 = endpoint not yet deployed — use demo silently
-        if (err?.status !== 404) {
-          setStatsError(getErrorMessage(err, ""));
+      } catch (err) {
+        if (!cancelled) {
+          if (err?.status !== 404) {
+            setStatsError(getErrorMessage(err, "Failed to load AI stats."));
+          }
+          setStats(DEMO_STATS);
         }
-        setStats(DEMO_STATS);
-      });
-    return () => { active = false; };
+      }
+    }
+
+    loadStats();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  // If the user navigates into the embedded AI Resume Workspace, render it directly
+  if (showResumeWorkspace) {
+    return (
+      <AIResumeWorkspace
+        user={user}
+        initialPage={resumeInitialPage}
+        onBackToBurnett={() => setShowResumeWorkspace(false)}
+      />
+    );
+  }
 
   const s = stats || DEMO_STATS;
 
   return (
     <div className="ais-page">
-
-      {/* ── Hero banner ────────────────────────────────────────── */}
+      {/* Hero banner */}
       <div className="ais-hero">
         <div className="ais-hero-left">
           <span className="ais-hero-eyebrow">
@@ -230,7 +180,7 @@ export default function AIServicesPage() {
         </div>
         <div className="ais-hero-right">
           <p className="ais-hero-right-tag">
-            Create resumes, practice interviews, and get AI-powered guidance — all
+            Create resumes, practice interviews, and get AI-powered guidance &mdash; all
             in one place.
           </p>
         </div>
@@ -240,10 +190,9 @@ export default function AIServicesPage() {
         <p className="ais-alert" role="alert">{statsError}</p>
       )}
 
-      {/* ── Service cards ──────────────────────────────────────── */}
+      {/* Service cards */}
       <div className="ais-cards">
-
-        {/* ── Resume Creator ─── */}
+        {/* Resume Creator */}
         <article className="ais-card ais-card--resume">
           <div className="ais-card-content">
             <div className="ais-card-header">
@@ -257,7 +206,7 @@ export default function AIServicesPage() {
             </p>
             <p className="ais-card-desc">
               Create a modern, ATS-friendly resume using AI. Just add your
-              skills, experience and target role — get a polished resume ready to
+              skills, experience and target role &mdash; get a polished resume ready to
               download in minutes.
             </p>
             <ul className="ais-card-features">
@@ -269,7 +218,10 @@ export default function AIServicesPage() {
             <button
               type="button"
               className="ais-card-cta ais-card-cta--green"
-              onClick={() => openService(AI_RESUME_URL, "/dashboard")}
+              onClick={() => {
+                setResumeInitialPage("dashboard");
+                setShowResumeWorkspace(true);
+              }}
             >
               Create Resume <Icon name="arrow" size={16} />
             </button>
@@ -279,7 +231,7 @@ export default function AIServicesPage() {
           </div>
         </article>
 
-        {/* ── Interview Assistant ─── */}
+        {/* Interview Assistant */}
         <article className="ais-card ais-card--interview">
           <div className="ais-card-content">
             <div className="ais-card-header">
@@ -305,7 +257,9 @@ export default function AIServicesPage() {
             <button
               type="button"
               className="ais-card-cta ais-card-cta--blue"
-              onClick={() => openService(AI_INTERVIEW_URL, "/dashboard")}
+              onClick={() => {
+                alert("AI Interview Assistant mock interview environment is preparing. You can start by preparing your resume first!");
+              }}
             >
               Start Interview <Icon name="arrow" size={16} />
             </button>
@@ -314,90 +268,79 @@ export default function AIServicesPage() {
             <InterviewIllustration />
           </div>
         </article>
-
       </div>
 
-      {/* ── Stats row ──────────────────────────────────────────── */}
-      <div className="ais-stats">
-        <StatTile
-          icon="file"
-          label="Total Resumes Created"
-          value={s.resumes_created}
-          note="↑ +2 this month"
-        />
-        <StatTile
-          icon="download"
-          label="Resumes Uploaded"
-          value={s.resumes_uploaded}
-          note="↑ +1 this month"
-        />
-        <StatTile
-          icon="user"
-          label="Total Interviews Taken"
-          value={s.interviews_taken}
-          note="↑ +1 this week"
-        />
-        <StatTile
-          icon="chart"
-          label="Average Performance"
-          value={s.average_performance != null ? `${s.average_performance}%` : null}
-          note="↑ +12%, this month"
-        />
+      {/* Stats row */}
+      <div className="ais-stats-row">
+        <div className="ais-stat-tile">
+          <span className="ais-stat-val">{s.resumes_created}</span>
+          <span className="ais-stat-lbl">Resumes Created</span>
+        </div>
+        <div className="ais-stat-tile">
+          <span className="ais-stat-val">{s.resumes_uploaded}</span>
+          <span className="ais-stat-lbl">Resumes Uploaded</span>
+        </div>
+        <div className="ais-stat-tile">
+          <span className="ais-stat-val">{s.interviews_taken}</span>
+          <span className="ais-stat-lbl">Interviews Taken</span>
+        </div>
+        <div className="ais-stat-tile">
+          <span className="ais-stat-val ais-stat-val--perf">{s.average_performance}%</span>
+          <span className="ais-stat-lbl">Average Performance</span>
+        </div>
       </div>
 
-      {/* ── Why Use section + Recent Activity ─────────────────── */}
-      <div className="ais-lower">
-
-        <section className="ais-why" aria-labelledby="ais-why-title">
-          <h2 id="ais-why-title">Why Use Our AI Services?</h2>
+      {/* Bottom section: Why Use + Recent Activity */}
+      <div className="ais-bottom-grid">
+        <section className="ais-why-section" aria-labelledby="ais-why-title">
+          <div className="ais-why-head">
+            <h2 id="ais-why-title">Why Use BurnettPeople AI?</h2>
+            <p className="ais-why-sub">Everything you need to succeed in one place</p>
+          </div>
           <div className="ais-why-grid">
-            {WHY_CARDS.map(({ icon, color, title, desc }) => (
-              <div className="ais-why-card" key={title}>
-                <span className={`ais-why-icon ais-why-icon--${color}`}>
-                  <Icon name={icon} size={22} />
+            {WHY_CARDS.map((card) => (
+              <div key={card.title} className="ais-why-card">
+                <span className={`ais-why-icon ais-why-icon--${card.color}`}>
+                  <Icon name={card.icon} size={20} />
                 </span>
-                <strong>{title}</strong>
-                <p>{desc}</p>
+                <div className="ais-why-text">
+                  <h3>{card.title}</h3>
+                  <p>{card.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        <aside className="ais-recent" aria-labelledby="ais-recent-title">
+        <section className="ais-recent-section" aria-labelledby="ais-recent-title">
           <div className="ais-recent-head">
             <h2 id="ais-recent-title">Recent Activity</h2>
             <button
               type="button"
               className="ais-recent-viewall"
-              onClick={() => openService(AI_RESUME_URL, "/dashboard")}
+              onClick={() => {
+                setResumeInitialPage("dashboard");
+                setShowResumeWorkspace(true);
+              }}
             >
-              View All →
+              View All &rarr;
             </button>
           </div>
           <ul className="ais-recent-list">
-            {recent.map((item) => (
+            {RECENT_DEMO.map((item) => (
               <li key={item.id} className="ais-recent-item">
-                <span className={`ais-recent-icon ais-recent-icon--${item.color || "green"}`}>
-                  <Icon name={item.icon || "file"} size={16} />
+                <span className={`ais-recent-icon ais-recent-icon--${item.color}`}>
+                  <Icon name={item.icon} size={16} />
                 </span>
-                <div>
-                  <p className="ais-recent-text">{item.text}</p>
+                <div className="ais-recent-text">
+                  <p className="ais-recent-title">{item.text}</p>
                   <small className="ais-recent-sub">{item.sub}</small>
                 </div>
               </li>
             ))}
-            {recent.length === 0 && (
-              <li className="ais-recent-empty">No recent activity yet.</li>
-            )}
           </ul>
-        </aside>
-
+        </section>
       </div>
-
-      {/* ── Footer breadcrumb ──────────────────────────────────── */}
-      <p className="ais-footer-note">
-        BurnettPeople &nbsp;|&nbsp; AI Services
-      </p>
     </div>
   );
 }

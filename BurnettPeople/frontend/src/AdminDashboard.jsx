@@ -523,7 +523,7 @@ export default function AdminDashboard({ user, onLogout }) {
       case "leave": return <AdminLeave />;
       case "reports": return <AdminReports />;
       case "audit": return <AdminAuditLogs />;
-      case "ai-services": return <AIServicesPage />;
+      case "ai-services": return <AIServicesPage user={user} />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return <ComingSoon title={title} />;
     }

@@ -423,7 +423,7 @@ function HRDashboard({ user, onLogout }) {
         return <><MyRecognitionSummary /><HRProfile user={user} /></>;
       case "leave":
         return <HRLeave />;
-      case "ai-services": return <AIServicesPage />;
+      case "ai-services": return <AIServicesPage user={user} />;
       default:
         return <ComingSoon title={title} />;
     }
