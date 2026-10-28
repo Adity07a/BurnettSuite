@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import StatusUpdates from "./StatusUpdates";
+import AIServicesPage from "./AIServicesPage";
 
 import { roleLabel, userDisplayName, userInitials } from "./auth/userDisplay";
 import DashboardShell from "./DashboardShell";
@@ -32,6 +34,7 @@ const NAV = [
   { id: "schedule", label: "Team Schedule", icon: "calendar" },
   { id: "reports", label: "Reports", icon: "file" },
   { id: "profile", label: "My Profile", icon: "user" },
+  { id: "ai-services", label: "AI Services", icon: "sun" },
   { id: "notifications", label: "Notifications", icon: "bell" },
   { id: "status-updates", label: "Work Status Updates", icon: "file" },
 ];
@@ -50,6 +53,7 @@ const PAGE_META = {
   reports: ["Team Reports", "View your team's attendance, leave and assets."],
   profile: ["My Profile", "View and manage your personal, work and managerial information."],
   notifications: ["Notifications", "Updates about your team."],
+  "ai-services": ["AI Services", "Leverage the power of AI to build your career and prepare for opportunities."],
   "status-updates": [
   "Work Status Updates",
   "Record completed work, current focus, testing, tech stack and blockers.",
@@ -212,8 +216,7 @@ export default function ManagerDashboard({ user, onLogout }) {
       case "reports": return <ReportsPage data={data} />;
       case "profile": return <><MyRecognitionSummary /><ProfilePage user={user} name={name} initials={userInitials(user)} roleText={roleLabel(user?.role)} data={data} /></>;
       case "notifications": return <NotificationsPage notifications={notifications} />;
-      case "profile": return <ProfilePage user={user} name={name} initials={userInitials(user)} roleText={roleLabel(user?.role)} data={data} />;
-      case "notifications": return <NotificationsPage data={data} />;
+      case "ai-services": return <AIServicesPage />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return <Overview data={data} go={setSection} onDecide={decideLeave} name={name} />;
     }

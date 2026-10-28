@@ -78,6 +78,7 @@ export default function StatusUpdates({ user }) {
     }
   }, [canReview, reportDate, user?.id]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { load(); }, [load]);
 
   const departments = useMemo(() => [...new Set(updates.map((x) => x.department).filter(Boolean))].sort(), [updates]);

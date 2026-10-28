@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import AIServicesPage from "./AIServicesPage";
 import StatusUpdates from "./StatusUpdates";
 import apiClient from "./api/client";
 import { Icon } from "./DashboardIcons";
@@ -49,6 +50,7 @@ const NAV = [
   { id: "assets", label: "Assets & Devices", icon: "laptop" },
   { id: "reports", label: "Reports", icon: "file" },
   { id: "audit", label: "Audit Logs", icon: "lock" },
+  { id: "ai-services", label: "AI Services", icon: "sun" },
   { id: "notifications", label: "Notifications", icon: "bell", badge: true },
   { id: "status-updates", label: "Work Status Updates", icon: "file" },
   // { id: "settings", label: "Settings", icon: "gear" },
@@ -60,7 +62,6 @@ const PAGE_META = {
   people: ["My People", "Explore your organization, connect with colleagues and celebrate achievements."],
   leaderboard: ["Good Habits & Leaderboard", "Recognize positive, verified work habits across the company."],
   "remote-work": ["Remote Work", "Review approved work location requests."],
-  "hr-roles": ["HR & Roles", "Onboard HR users and review access roles."],
   "hr-roles": ["HR & Manager Overview", "Manage HR employees, assign managers, and view reporting structure."],
   company: ["Company Settings", "Manage your organization structure, roles, locations, schedules and basic information."],
   departments: ["Company Settings", "Manage your organization structure, roles, locations, schedules and basic information."],
@@ -74,6 +75,7 @@ const PAGE_META = {
   audit: ["Audit Logs", "Track all activities and changes happening in the system. Monitor user actions, data changes, and security events."],
   notifications: ["Notifications", "Everything that needs your attention."],
   settings: ["Settings", "Company preferences and configuration."],
+  "ai-services": ["AI Services", "Leverage the power of AI to build your career and prepare for opportunities."],
   "status-updates": [
   "Work Status Updates",
   "Record completed work, current focus, testing, tech stack and blockers.",
@@ -521,6 +523,7 @@ export default function AdminDashboard({ user, onLogout }) {
       case "leave": return <AdminLeave />;
       case "reports": return <AdminReports />;
       case "audit": return <AdminAuditLogs />;
+      case "ai-services": return <AIServicesPage />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return <ComingSoon title={title} />;
     }

@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import StatusUpdates from "./StatusUpdates";
 import { userDisplayName } from "./auth/userDisplay";
 import DashboardShell from "./DashboardShell";
 import { Icon } from "./DashboardIcons";
@@ -14,6 +13,7 @@ import HRSettings from "./HRSettings";
 import HRProfile from "./HRProfile";
 import HRAttendance from "./HRAttendance";
 import HRExceptionReview from "./HRExceptionReview";
+import AIServicesPage from "./AIServicesPage";
 import {
   AVATAR_TONES,
   SHOW_DEMO_DATA,
@@ -39,6 +39,7 @@ const NAV = [
   { id: "assets", label: "Assets & Devices", icon: "laptop" },
   { id: "reports", label: "Reports", icon: "chart" },
   { id: "settings", label: "HR Settings", icon: "gear" },
+  { id: "ai-services", label: "AI Services", icon: "sun" },
   { id: "notifications", label: "Notifications", icon: "bell", badge: true },
   { id: "profile", label: "My Profile", icon: "user" },
   { id: "status-updates", label: "Work Status Updates", icon: "file" },
@@ -59,6 +60,7 @@ const PAGE_META = {
   settings: ["HR Settings", "Manage company policies, time-off rules, assets, schedules and other HR configurations."],
   notifications: ["Notifications", "Everything that needs your attention."],
   profile: ["My Profile", "View and manage your personal, work and HR information."],
+  "ai-services": ["AI Services", "Leverage the power of AI to build your career and prepare for opportunities."],
   "status-updates": [
   "Work Status Updates",
   "Record completed work, current focus, testing, tech stack and blockers.",],
@@ -421,6 +423,7 @@ function HRDashboard({ user, onLogout }) {
         return <><MyRecognitionSummary /><HRProfile user={user} /></>;
       case "leave":
         return <HRLeave />;
+      case "ai-services": return <AIServicesPage />;
       default:
         return <ComingSoon title={title} />;
     }

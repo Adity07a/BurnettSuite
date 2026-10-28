@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import StatusUpdates from "./StatusUpdates";
+import AIServicesPage from "./AIServicesPage";
 import apiClient from "./api/client";
 import { userDisplayName, userInitials, roleLabel } from "./auth/userDisplay";
 import DashboardShell from "./DashboardShell";
@@ -40,6 +41,7 @@ const NAV = [
   { id: "assets", label: "My Assets", icon: "laptop" },
   { id: "requests", label: "My Requests", icon: "file" },
   { id: "profile", label: "My Profile", icon: "user" },
+  { id: "ai-services", label: "AI Services", icon: "sun" },
   { id: "notifications", label: "Notifications", icon: "bell", badge: true },
   { id: "status-updates", label: "Work Status Updates", icon: "file" },
 ];
@@ -55,6 +57,7 @@ const PAGE_META = {
   assets: ["My Assets", "Devices and equipment assigned to you."],
   requests: ["My Requests", "Report attendance issues and track their review."],
   profile: ["My Profile", "Your personal information and work details."],
+  "ai-services": ["AI Services", "Leverage the power of AI to build your career and prepare for opportunities."],
   notifications: ["Notifications", "Updates about your requests and attendance."],
 };
 
@@ -987,6 +990,7 @@ function EmployeeDashboard({ user, onLogout }) {
       case "requests": return renderRequests();
       case "profile": return <><MyRecognitionSummary />{renderProfile()}</>;
       case "notifications": return renderNotifications();
+      case "ai-services": return <AIServicesPage />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return renderOverview();
     }
