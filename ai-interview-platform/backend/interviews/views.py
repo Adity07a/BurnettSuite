@@ -1,7 +1,5 @@
-import io
 import logging
 import random
-import sys
 import time
 import uuid
 
@@ -580,28 +578,27 @@ class InterviewQuestionSkipView(APIView):
 
 
 class RunCodeView(APIView):
+    """Placeholder until the isolated code-runner service is deployed.
+
+    User code must never execute inside the Django API process. The previous
+    implementation used ``exec`` and could access application secrets, the
+    database, filesystem, and internal network.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        code = request.data.get("code", "")
-        if not code.strip():
-            return Response({"output": "No code provided to execute."}, status=400)
-
-        old_stdout = sys.stdout
-        redirected_output = sys.stdout = io.StringIO()
-
-        try:
-            exec_scope = {}
-            exec(code, exec_scope)
-            output = redirected_output.getvalue()
-            if not output:
-                output = "Code executed successfully with no stdout output."
-        except Exception as e:
-            output = f"Execution Error:\n{type(e).__name__}: {str(e)}"
-        finally:
-            sys.stdout = old_stdout
-
-        return Response({"output": output})
+        return Response(
+            {
+                "output": (
+                    "Code execution is temporarily unavailable while the "
+                    "isolated runner is being deployed. You can still submit "
+                    "code for interview evaluation."
+                ),
+                "code": "code_runner_unavailable",
+            },
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
 
 
 class QuestionBankViewSet(viewsets.ModelViewSet):

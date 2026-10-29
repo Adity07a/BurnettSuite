@@ -1,8 +1,4 @@
 
-import json
-import os
-
-import httpx
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from app.schemas.resume import ResumeParseResult
@@ -14,15 +10,9 @@ from app.services.resume_parser import (
     extract_job_title,
     separate_education_and_certifications,
 )
+from app.services.llm_service import generate_json
 
 router = APIRouter()
-
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
-OLLAMA_BASE_URL = os.getenv(
-    "OLLAMA_BASE_URL",
-    "http://localhost:11434",
-).rstrip("/")
 
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
 
@@ -32,12 +22,6 @@ MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB
     response_model=ResumeParseResult,
 )
 async def parse_resume(file: UploadFile = File(...)):
-    if LLM_PROVIDER != "ollama":
-        raise HTTPException(
-            status_code=501,
-            detail="Only the Ollama provider is configured currently.",
-        )
-
     filename = file.filename or ""
 
     try:
@@ -68,7 +52,6 @@ async def parse_resume(file: UploadFile = File(...)):
     finally:
         await file.close()
 
-    
     prompt = f"""
 Extract all available information from the supplied resume.
 
@@ -94,33 +77,18 @@ RESUME TEXT:
 """
 
 
-    payload = {
-        "model": OLLAMA_MODEL,
-        "messages": [
-            {
-                "role": "system",
-                "content": (
-                    "You extract structured resume information. "
-                    "Do not add facts that are not present in the supplied resume."
-                ),
-            },
-            {"role": "user", "content": prompt},
-        ],
-        "format": ResumeParseResult.model_json_schema(),
-        "stream": False,
-        "options": {"temperature": 0},
-    }
-
     try:
-        async with httpx.AsyncClient(timeout=180.0) as client:
-            response = await client.post(
-                f"{OLLAMA_BASE_URL}/api/chat",
-                json=payload,
-            )
-            response.raise_for_status()
-
-        content = response.json()["message"]["content"]
-        result = ResumeParseResult.model_validate_json(content)
+        generated = await generate_json(
+            prompt,
+            system_prompt=(
+                "You extract structured resume information. Return only valid JSON "
+                "matching the requested schema. Do not add facts that are not "
+                "present in the supplied resume."
+            ),
+            temperature=0,
+            json_schema=ResumeParseResult.model_json_schema(),
+        )
+        result = ResumeParseResult.model_validate(generated)
 
         result.education, result.certifications = (
             separate_education_and_certifications(
@@ -128,7 +96,7 @@ RESUME TEXT:
                 result.certifications,
             )
         )
-        
+
         if not result.skills:
             result.skills = extract_skills(resume_text)
 
@@ -139,7 +107,6 @@ RESUME TEXT:
 
                 if title:
                     experience.job_title = title
-
 
         # Merge contact details extracted directly from the resume text.
         for field in ("email", "phone", "linkedin", "github", "portfolio"):
@@ -168,27 +135,12 @@ RESUME TEXT:
             result.personal_info.linkedin = ""
 
         return result
-    
-    except httpx.ConnectError as exc:
-        raise HTTPException(
-            status_code=503,
-            detail="Cannot connect to Ollama. Ensure Ollama is running.",
-        ) from exc
 
-    except httpx.TimeoutException as exc:
-        raise HTTPException(
-            status_code=504,
-            detail="Ollama took too long to process the resume.",
-        ) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
-    except httpx.HTTPStatusError as exc:
+    except (ValueError, KeyError) as exc:
         raise HTTPException(
             status_code=502,
-            detail=f"Ollama returned HTTP {exc.response.status_code}.",
-        ) from exc
-
-    except (json.JSONDecodeError, ValueError, KeyError) as exc:
-        raise HTTPException(
-            status_code=502,
-            detail="Ollama returned an invalid or unexpected response.",
+            detail="The AI provider returned an invalid or unexpected response.",
         ) from exc

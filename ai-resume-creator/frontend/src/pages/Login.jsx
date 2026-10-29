@@ -15,12 +15,12 @@ function Login() {
     setSuccess("");
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email")?.trim();
+    const identifier = formData.get("identifier")?.trim();
     const password = formData.get("password");
     const rememberMe = formData.get("rememberMe") === "on";
 
-    if (!email || !password) {
-      setError("Please enter your email and password.");
+    if (!identifier || !password) {
+      setError("Please enter your email/mobile and password.");
       return;
     }
 
@@ -38,7 +38,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ identifier, password }),
       });
 
       if (!data?.access || !data?.refresh) {
@@ -109,13 +109,13 @@ function Login() {
 
         <form className="auth-form" onSubmit={handleLogin}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="identifier">Email or mobile number</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              autoComplete="email"
+              type="text"
+              id="identifier"
+              name="identifier"
+              placeholder="Enter your email or mobile number"
+              autoComplete="username"
               required
             />
           </div>

@@ -27,7 +27,21 @@ function Resume() {
   };
 
   useEffect(() => {
-    load();
+    let active = true;
+    api
+      .get(`resumes/latest/?t=${Date.now()}`)
+      .then(({ data }) => {
+        if (active) setResume(data);
+      })
+      .catch((error) => {
+        if (error.response?.status !== 404) console.error(error);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const select = (file) => {

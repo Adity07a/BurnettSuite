@@ -1,0 +1,295 @@
+name: burnett-suite
+
+x-api-defaults: &api-defaults
+  restart: unless-stopped
+  init: true
+  networks: [suite]
+  security_opt:
+    - no-new-privileges:true
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "3"
+
+services:
+  gateway:
+    <<: *api-defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: gateway
+    environment:
+      PLATFORM_HOST: ${PLATFORM_HOST:-platform.localhost}
+      INTERVIEW_HOST: ${INTERVIEW_HOST:-interview.localhost}
+      RESUME_HOST: ${RESUME_HOST:-resume.localhost}
+      PEOPLE_HOST: ${PEOPLE_HOST:-people.localhost}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${INTERVIEW_HTTP_PORT:-8081}:8081"
+      - "${RESUME_HTTP_PORT:-8082}:8082"
+      - "${PEOPLE_HTTP_PORT:-8083}:8083"
+    volumes:
+      - interview-media:/srv/interview-media:ro
+    depends_on:
+      interview-api: {condition: service_healthy}
+      resume-api: {condition: service_healthy}
+      people-api: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  interview-api:
+    <<: *api-defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: interview-api
+    environment:
+      DJANGO_DEBUG: "false"
+      DJANGO_SECRET_KEY: ${INTERVIEW_SECRET_KEY:?Set INTERVIEW_SECRET_KEY in .env}
+      DJANGO_ALLOWED_HOSTS: ${INTERVIEW_HOST:-interview.localhost},interview-api,localhost,127.0.0.1
+      DB_ENGINE: postgresql
+      DB_NAME: ${INTERVIEW_DB_NAME:-interview}
+      DB_USER: ${INTERVIEW_DB_USER:-interview}
+      DB_PASSWORD: ${INTERVIEW_DB_PASSWORD:?Set INTERVIEW_DB_PASSWORD in .env}
+      DB_HOST: interview-db
+      DB_PORT: "5432"
+      FRONTEND_URL: ${PUBLIC_SCHEME:-http}://${INTERVIEW_HOST:-interview.localhost}
+      CORS_ALLOWED_ORIGINS: ${PUBLIC_SCHEME:-http}://${INTERVIEW_HOST:-interview.localhost}
+      DJANGO_SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-false}
+      DJANGO_SECURE_COOKIES: ${SECURE_COOKIES:-false}
+      TRUST_PROXY_SSL_HEADER: "true"
+      SUITE_JWT_SIGNING_KEY: ${SUITE_JWT_SIGNING_KEY:?Set SUITE_JWT_SIGNING_KEY in .env}
+      SUITE_COOKIE_SECURE: ${SECURE_COOKIES:-false}
+      SUITE_COOKIE_SAMESITE: ${SUITE_COOKIE_SAMESITE:-Lax}
+      SUITE_COOKIE_DOMAIN: ${SUITE_COOKIE_DOMAIN:-}
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      BEDROCK_BASE_URL: ${BEDROCK_BASE_URL:-}
+      BEDROCK_PROJECT: ${BEDROCK_PROJECT:-default}
+      BEDROCK_TIMEOUT_SECONDS: ${BEDROCK_TIMEOUT_SECONDS:-60}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-zai.glm-4.7-flash}
+      BEDROCK_ASSISTANT_MODEL_ID: ${BEDROCK_ASSISTANT_MODEL_ID:-nvidia.nemotron-super-3-120b}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    command: ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile - --error-logfile -"]
+    depends_on:
+      interview-db: {condition: service_healthy}
+    volumes:
+      - interview-media:/app/media
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health/', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  resume-api:
+    <<: *api-defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: resume-api
+    environment:
+      DJANGO_DEBUG: "false"
+      DJANGO_SECRET_KEY: ${RESUME_SECRET_KEY:?Set RESUME_SECRET_KEY in .env}
+      DJANGO_ALLOWED_HOSTS: ${RESUME_HOST:-resume.localhost},resume-api,localhost,127.0.0.1
+      DB_ENGINE: postgres
+      DB_NAME: ${RESUME_DB_NAME:-resume}
+      DB_USER: ${RESUME_DB_USER:-resume}
+      DB_PASSWORD: ${RESUME_DB_PASSWORD:?Set RESUME_DB_PASSWORD in .env}
+      DB_HOST: resume-db
+      DB_PORT: "5432"
+      AI_SERVICE_URL: http://resume-ai:8001
+      AI_SERVICE_SHARED_TOKEN: ${AI_SERVICE_SHARED_TOKEN:?Set AI_SERVICE_SHARED_TOKEN in .env}
+      REDIS_URL: redis://redis:6379/0
+      AI_PROVIDER: ${RESUME_AI_PROVIDER:-bedrock}
+      AI_MODEL: ${RESUME_AI_MODEL:-zai.glm-4.7-flash}
+      FRONTEND_URL: ${PUBLIC_SCHEME:-http}://${RESUME_HOST:-resume.localhost}
+      PUBLIC_API_BASE_URL: ${PUBLIC_SCHEME:-http}://${RESUME_HOST:-resume.localhost}
+      DJANGO_CORS_ALLOWED_ORIGINS: ${PUBLIC_SCHEME:-http}://${RESUME_HOST:-resume.localhost}
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${PUBLIC_SCHEME:-http}://${RESUME_HOST:-resume.localhost}
+      SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-false}
+      TRUST_PROXY_SSL_HEADER: "true"
+      EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+      SUITE_JWT_SIGNING_KEY: ${SUITE_JWT_SIGNING_KEY:?Set SUITE_JWT_SIGNING_KEY in .env}
+    command: ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile - --error-logfile -"]
+    depends_on:
+      resume-db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      resume-ai: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health/', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  resume-ai:
+    <<: *api-defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: resume-ai
+    environment:
+      AI_SERVICE_SHARED_TOKEN: ${AI_SERVICE_SHARED_TOKEN:?Set AI_SERVICE_SHARED_TOKEN in .env}
+      AI_PROVIDER: ${RESUME_AI_PROVIDER:-bedrock}
+      AI_MODEL: ${RESUME_AI_MODEL:-zai.glm-4.7-flash}
+      AI_BASE_URL: ${RESUME_AI_BASE_URL:-}
+      AI_API_KEY: ${RESUME_AI_API_KEY:-}
+      AI_TIMEOUT_SECONDS: ${RESUME_AI_TIMEOUT_SECONDS:-180}
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      BEDROCK_BASE_URL: ${BEDROCK_BASE_URL:-}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-zai.glm-4.7-flash}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
+  resume-worker:
+    <<: *api-defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: resume-api
+    environment:
+      DJANGO_DEBUG: "false"
+      DJANGO_SECRET_KEY: ${RESUME_SECRET_KEY:?Set RESUME_SECRET_KEY in .env}
+      DJANGO_ALLOWED_HOSTS: resume-worker
+      DB_ENGINE: postgres
+      DB_NAME: ${RESUME_DB_NAME:-resume}
+      DB_USER: ${RESUME_DB_USER:-resume}
+      DB_PASSWORD: ${RESUME_DB_PASSWORD:?Set RESUME_DB_PASSWORD in .env}
+      DB_HOST: resume-db
+      DB_PORT: "5432"
+      AI_SERVICE_URL: http://resume-ai:8001
+      AI_SERVICE_SHARED_TOKEN: ${AI_SERVICE_SHARED_TOKEN:?Set AI_SERVICE_SHARED_TOKEN in .env}
+      REDIS_URL: redis://redis:6379/0
+      AI_PROVIDER: ${RESUME_AI_PROVIDER:-bedrock}
+      AI_MODEL: ${RESUME_AI_MODEL:-zai.glm-4.7-flash}
+      SECURE_SSL_REDIRECT: "false"
+      SUITE_JWT_SIGNING_KEY: ${SUITE_JWT_SIGNING_KEY:?Set SUITE_JWT_SIGNING_KEY in .env}
+    command: ["arq", "ai_jobs.worker.WorkerSettings"]
+    depends_on:
+      resume-api: {condition: service_healthy}
+
+  people-api:
+    <<: *api-defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: people-api
+    environment: &people-environment
+      DJANGO_SETTINGS_MODULE: config.production_settings
+      DJANGO_SECRET_KEY: ${PEOPLE_SECRET_KEY:?Set PEOPLE_SECRET_KEY in .env}
+      DJANGO_ALLOWED_HOSTS: ${PEOPLE_HOST:-people.localhost},people-api,localhost,127.0.0.1
+      DB_NAME: ${PEOPLE_DB_NAME:-people}
+      DB_USER: ${PEOPLE_DB_USER:-people}
+      DB_PASSWORD: ${PEOPLE_DB_PASSWORD:?Set PEOPLE_DB_PASSWORD in .env}
+      DB_HOST: people-db
+      DB_PORT: "5432"
+      DB_SSLMODE: ${PEOPLE_DB_SSLMODE:-disable}
+      REDIS_URL: redis://redis:6379/1
+      CORS_ALLOWED_ORIGINS: ${PUBLIC_SCHEME:-http}://${PEOPLE_HOST:-people.localhost}
+      CSRF_TRUSTED_ORIGINS: ${PUBLIC_SCHEME:-http}://${PEOPLE_HOST:-people.localhost}
+      FRONTEND_BASE_URL: ${PUBLIC_SCHEME:-http}://${PEOPLE_HOST:-people.localhost}
+      SECURE_SSL_REDIRECT: ${SECURE_SSL_REDIRECT:-false}
+      SECURE_COOKIES: ${SECURE_COOKIES:-false}
+      TRUST_PROXY_SSL_HEADER: "true"
+      EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+      SUITE_JWT_SIGNING_KEY: ${SUITE_JWT_SIGNING_KEY:?Set SUITE_JWT_SIGNING_KEY in .env}
+      AI_PROVIDER: ${PEOPLE_AI_PROVIDER:-bedrock}
+      AI_API_KEY: ${PEOPLE_AI_API_KEY:-}
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+      AI_BASE_URL: ${PEOPLE_AI_BASE_URL:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AI_MODEL: ${PEOPLE_AI_MODEL:-zai.glm-4.7-flash}
+    command: ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile - --error-logfile -"]
+    depends_on:
+      people-db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; req=urllib.request.Request('http://127.0.0.1:8000/api/health/ready/', headers={'Host':'people-api'}); urllib.request.urlopen(req, timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  people-worker:
+    <<: *api-defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: people-api
+    environment: *people-environment
+    command: ["celery", "-A", "config", "worker", "--loglevel=INFO", "--concurrency=2"]
+    depends_on:
+      people-api: {condition: service_healthy}
+
+  interview-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    networks: [suite]
+    environment:
+      POSTGRES_DB: ${INTERVIEW_DB_NAME:-interview}
+      POSTGRES_USER: ${INTERVIEW_DB_USER:-interview}
+      POSTGRES_PASSWORD: ${INTERVIEW_DB_PASSWORD:?Set INTERVIEW_DB_PASSWORD in .env}
+    volumes: [interview-data:/var/lib/postgresql/data]
+    healthcheck: &postgres-health
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  resume-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    networks: [suite]
+    environment:
+      POSTGRES_DB: ${RESUME_DB_NAME:-resume}
+      POSTGRES_USER: ${RESUME_DB_USER:-resume}
+      POSTGRES_PASSWORD: ${RESUME_DB_PASSWORD:?Set RESUME_DB_PASSWORD in .env}
+    volumes: [resume-data:/var/lib/postgresql/data]
+    healthcheck: *postgres-health
+
+  people-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    networks: [suite]
+    environment:
+      POSTGRES_DB: ${PEOPLE_DB_NAME:-people}
+      POSTGRES_USER: ${PEOPLE_DB_USER:-people}
+      POSTGRES_PASSWORD: ${PEOPLE_DB_PASSWORD:?Set PEOPLE_DB_PASSWORD in .env}
+    volumes: [people-data:/var/lib/postgresql/data]
+    healthcheck: *postgres-health
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks: [suite]
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+networks:
+  suite:
+
+volumes:
+  interview-data:
+  interview-media:
+  resume-data:
+  people-data:
+  redis-data:

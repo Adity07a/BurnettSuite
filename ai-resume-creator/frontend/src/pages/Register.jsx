@@ -34,15 +34,14 @@ function Register() {
     const payload = {
       first_name: formData.get("first_name").trim(),
       last_name: formData.get("last_name").trim(),
-      username: formData.get("username").trim(),
       email: formData.get("email").trim(),
+      mobile: formData.get("mobile").trim(),
       password,
     };
 
     if (
       !payload.first_name ||
       !payload.last_name ||
-      !payload.username ||
       !payload.email
     ) {
       setError("Please fill in all required fields.");
@@ -150,18 +149,6 @@ function Register() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Choose a username"
-              autoComplete="username"
-              required
-            />
-          </div>
-
-          <div className="form-group">
             <label htmlFor="registerEmail">Email Address</label>
             <input
               type="email"
@@ -170,6 +157,17 @@ function Register() {
               placeholder="Enter your email"
               autoComplete="email"
               required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="registerMobile">Mobile Number (optional)</label>
+            <input
+              type="tel"
+              id="registerMobile"
+              name="mobile"
+              placeholder="Enter your mobile number"
+              autoComplete="tel"
             />
           </div>
 

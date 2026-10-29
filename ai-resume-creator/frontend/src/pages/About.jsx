@@ -24,10 +24,7 @@ function About() {
         </nav>
 
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <Link to="/login" style={{ textDecoration: "none", color: "var(--text-main)", fontWeight: 600 }}>
-            Login
-          </Link>
-          <Link to="/register" className="primary-btn" style={{ padding: "0.5rem 1.2rem", fontSize: "0.9rem" }}>
+          <Link to="/dashboard" className="primary-btn" style={{ padding: "0.5rem 1.2rem", fontSize: "0.9rem" }}>
             Get Started →
           </Link>
         </div>

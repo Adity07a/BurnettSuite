@@ -1007,7 +1007,6 @@ function EmployeeDashboard({ user, onLogout }) {
       searchPlaceholder="Search policies, leave, schedules..."
       unread={unread}
       homePath="/employee"
-      footerLabel="Employee workspace"
     >
       {renderPage()}
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -7,8 +7,8 @@ import api from "../services/api";
 const cap = (v) => v ? v.charAt(0).toUpperCase() + v.slice(1) : "—";
 function Interviews() {
   const [items, setItems] = useState([]); const [loading, setLoading] = useState(true); const [filter, setFilter] = useState("all"); const navigate = useNavigate();
-  const load = () => api.get("interviews/history/").then(r => setItems(r.data)).catch(e => { if (e.response?.status === 401) navigate("/login"); }).finally(() => setLoading(false));
-  useEffect(() => { load(); }, []);
+  const load = useCallback(() => api.get("interviews/history/").then(r => setItems(r.data)).catch(e => { if (e.response?.status === 401) navigate("/login"); }).finally(() => setLoading(false)), [navigate]);
+  useEffect(() => { load(); }, [load]);
   const visible = filter === "all" ? items : items.filter(i => i.status === filter);
   return <div className="flex min-h-screen bg-slate-950"><Sidebar/><div className="flex min-w-0 flex-1 flex-col bg-slate-100"><Navbar/><main className="flex-1"><div className="mx-auto max-w-6xl px-5 py-8 sm:px-7 lg:px-8"><div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-semibold text-blue-600">Practice history</p><h1 className="mt-1 text-3xl font-black text-slate-900">My Interviews</h1><p className="mt-2 text-sm text-slate-500">Review every interview session you have created.</p></div><button onClick={() => navigate("/interview-setup")} className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700">+ New Interview</button></div>
   <div className="mb-5 flex gap-2 overflow-x-auto">{["all","completed","in_progress","pending"].map(f => <button key={f} onClick={() => setFilter(f)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold ${filter === f ? "bg-slate-900 text-white" : "bg-white text-slate-600 border border-slate-200"}`}>{f === "all" ? "All" : cap(f).replace("_", " ")}</button>)}</div>

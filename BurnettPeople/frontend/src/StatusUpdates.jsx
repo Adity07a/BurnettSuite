@@ -78,7 +78,7 @@ export default function StatusUpdates({ user }) {
     }
   }, [canReview, reportDate, user?.id]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { void Promise.resolve().then(load); }, [load]);
 
   const departments = useMemo(() => [...new Set(updates.map((x) => x.department).filter(Boolean))].sort(), [updates]);
   const missingDepartments = useMemo(() => [...new Set(missing.map((x) => x.department).filter(Boolean))].sort(), [missing]);

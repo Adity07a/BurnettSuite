@@ -44,7 +44,10 @@ def generate_leave_draft(payload):
             warning = "Development fallback is enabled; configure AI_PROVIDER and AI_API_KEY for provider-generated drafts."
         return {"draft": _development_draft(payload), "provider": "development_fallback", "fallback": True, "warning": warning}
 
-    if provider != "openai_compatible":
+    # Amazon Bedrock Chat Completions is OpenAI-compatible. ``bedrock`` is an
+    # explicit deployment-friendly alias; ``openai_compatible`` remains for
+    # backward compatibility with existing environments.
+    if provider not in {"bedrock", "openai_compatible"}:
         raise AIProviderError("The configured AI provider is not supported.", status_code=503)
 
     base_url = (getattr(settings, "AI_BASE_URL", "https://api.openai.com/v1") or "").rstrip("/")

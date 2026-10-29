@@ -1,14 +1,24 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import api from "../services/api";
 
 function ProtectedRoute({ children }) {
-  const location = useLocation();
-  const token = localStorage.getItem("access_token");
+  const [ready, setReady] = useState(false);
 
-  if (!token) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
-  }
+  useEffect(() => {
+    let active = true;
+    api.get("suite-auth/session/").then(({ data }) => {
+      localStorage.setItem("user", JSON.stringify(data));
+      if (active) setReady(true);
+    }).catch(() => {
+      window.location.assign(window.BurnettSuite?.loginUrl?.() || "/login");
+    });
+    return () => { active = false; };
+  }, []);
 
-  return children;
+  return ready
+    ? children
+    : <div className="p-8 text-center">Loading your BurnettSuite session…</div>;
 }
 
 export default ProtectedRoute;

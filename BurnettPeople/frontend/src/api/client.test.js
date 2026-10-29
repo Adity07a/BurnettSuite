@@ -26,10 +26,10 @@ afterEach(() => {
   apiClient.setSessionExpiredHandler(null);
 });
 
-test("adds the current bearer access token to protected requests", async () => {
-  apiClient.setSessionTokens({ access: "access-test", refresh: "refresh-test" });
+test("uses the shared HttpOnly cookie for protected requests", async () => {
   globalThis.fetch = async (_url, options) => {
-    assert.equal(new Headers(options.headers).get("Authorization"), "Bearer access-test");
+    assert.equal(new Headers(options.headers).get("Authorization"), null);
+    assert.equal(options.credentials, "include");
     return fakeResponse(200, { ok: true });
   };
   assert.deepEqual(await apiClient.get("/auth/me/"), { ok: true });
@@ -55,17 +55,19 @@ test("handles a 205 empty logout response", async () => {
 });
 
 test("coalesces concurrent refresh attempts and retries safe GET requests", async () => {
-  apiClient.setSessionTokens({ access: "old-access", refresh: "old-refresh" });
   let refreshCalls = 0;
+  const attempts = new Map();
   globalThis.fetch = async (url, options) => {
-    if (String(url).endsWith("/auth/token/refresh/")) {
+    if (String(url).endsWith("/api/suite-auth/refresh/")) {
       refreshCalls += 1;
       await new Promise((resolve) => setTimeout(resolve, 10));
-      return fakeResponse(200, { access: "new-access", refresh: "new-refresh" });
+      return fakeResponse(200, { detail: "Session refreshed." });
     }
     const auth = new Headers(options.headers).get("Authorization");
-    if (auth === "Bearer old-access") return fakeResponse(401, { detail: "Token is invalid or expired" });
-    assert.equal(auth, "Bearer new-access");
+    assert.equal(auth, null);
+    const count = attempts.get(String(url)) || 0;
+    attempts.set(String(url), count + 1);
+    if (count === 0) return fakeResponse(401, { detail: "Session expired" });
     return fakeResponse(200, { ok: true });
   };
 
@@ -73,15 +75,14 @@ test("coalesces concurrent refresh attempts and retries safe GET requests", asyn
   assert.deepEqual(one, { ok: true });
   assert.deepEqual(two, { ok: true });
   assert.equal(refreshCalls, 1);
-  assert.equal(apiClient.getRefreshToken(), "new-refresh");
+  assert.equal(apiClient.getRefreshToken(), null);
 });
 
 test("does not automatically replay a non-idempotent POST after refreshing", async () => {
-  apiClient.setSessionTokens({ access: "old-access", refresh: "old-refresh" });
   let postCalls = 0;
   globalThis.fetch = async (url) => {
-    if (String(url).endsWith("/auth/token/refresh/")) {
-      return fakeResponse(200, { access: "new-access", refresh: "new-refresh" });
+    if (String(url).endsWith("/api/suite-auth/refresh/")) {
+      return fakeResponse(200, { detail: "Session refreshed." });
     }
     if (String(url).endsWith("/employees/")) {
       postCalls += 1;
@@ -96,5 +97,5 @@ test("does not automatically replay a non-idempotent POST after refreshing", asy
     return true;
   });
   assert.equal(postCalls, 1);
-  assert.equal(apiClient.getAccessToken(), "new-access");
+  assert.equal(apiClient.getAccessToken(), null);
 });
