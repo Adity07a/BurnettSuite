@@ -10,19 +10,26 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 if not ALLOWED_HOSTS:
     raise ImproperlyConfigured("Set DJANGO_ALLOWED_HOSTS to explicit production hostnames.")
 
-DATABASE_URL = env("DATABASE_URL", default="").strip()
-if not DATABASE_URL:
-    raise ImproperlyConfigured("Set DATABASE_URL to the production PostgreSQL connection URL.")
-DATABASES = {"default": env.db("DATABASE_URL")}
+if DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":  # noqa: F405
+    raise ImproperlyConfigured(
+        "Configure PostgreSQL with DATABASE_URL or DB_HOST/DB_NAME/DB_USER/DB_PASSWORD."
+    )
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("DB_CONN_MAX_AGE", default=60)
+DATABASES["default"].setdefault("OPTIONS", {})
+if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
+    database_sslmode = env("DB_SSLMODE", default="require").strip()
+    if database_sslmode:
+        DATABASES["default"]["OPTIONS"].setdefault(
+            "sslmode", database_sslmode
+        )
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 if not CORS_ALLOWED_ORIGINS:
     raise ImproperlyConfigured("Set CORS_ALLOWED_ORIGINS to explicit frontend origins.")
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = env.bool("SECURE_COOKIES", default=True)
+CSRF_COOKIE_SECURE = SESSION_COOKIE_SECURE
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"

@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Editor from "@monaco-editor/react";
 import api from "../services/api";
 import { configureInterviewVoice } from "../services/interviewVoice";
 import { voiceFailureMessage } from "../services/interviewAudio";
@@ -114,7 +113,6 @@ function InterviewRoom() {
   const [questionType, setQuestionType] = useState("conceptual");
   const [code, setCode] = useState("");
   const [consoleOutput, setConsoleOutput] = useState("");
-  const [isRunningCode, setIsRunningCode] = useState(false);
   const [questionLoading, setQuestionLoading] = useState(true);
   const [questionError, setQuestionError] = useState("");
   const [bankExhausted, setBankExhausted] = useState(false);
@@ -125,9 +123,9 @@ function InterviewRoom() {
   // ==========================================
 
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voiceSource, setVoiceSource] = useState("Voice");
-  const [voiceWarning, setVoiceWarning] = useState("");
-  const [microphoneError, setMicrophoneError] = useState("");
+  const [, setVoiceSource] = useState("Voice");
+  const [, setVoiceWarning] = useState("");
+  const [, setMicrophoneError] = useState("");
   const [changingQuestion, setChangingQuestion] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isProcessingAnswer, setIsProcessingAnswer] = useState(false);
@@ -148,8 +146,8 @@ function InterviewRoom() {
   // ==========================================
 
   const [transcript, setTranscript] = useState("");
-  const [answerError, setAnswerError] = useState("");
-  const [evaluationError, setEvaluationError] = useState(null);
+  const [, setAnswerError] = useState("");
+  const [, setEvaluationError] = useState(null);
   const pendingEvaluationsRef = useRef(new Set());
   const endedRef = useRef(false);
 
@@ -235,20 +233,26 @@ function InterviewRoom() {
         interviewTimerRef.current = null;
         try {
           recognitionRef.current?.stop();
-        } catch (error) {}
+        } catch {
+          // Recognition may already be stopped during timer cleanup.
+        }
         audioStopRef.current?.();
         stopBrowserSpeech();
         setIsListening(false);
         setIsSpeaking(false);
         try {
           await api.post(`interviews/${id}/complete/`);
-        } catch (error) {}
+        } catch {
+          // Completion is best effort; pending evaluations still settle below.
+        }
         await Promise.allSettled([...pendingEvaluationsRef.current]);
         alert("Interview completed successfully.");
         navigate(`/interview-result/${id}`);
       }
     }, 1000);
   };
+
+  const startInterviewTimerEvent = useEffectEvent(startInterviewTimer);
 
   useEffect(() => {
     let active = true;
@@ -262,7 +266,7 @@ function InterviewRoom() {
         }
         const started = await api.post(`interviews/${id}/start/`);
         if (!active) return;
-        startInterviewTimer(response.data.duration, started.data.started_at);
+        startInterviewTimerEvent(response.data.duration, started.data.started_at);
       } catch (error) {
         if (!active) return;
         if (error.response?.status === 401) {
@@ -276,9 +280,9 @@ function InterviewRoom() {
       active = false;
       clearInterval(interviewTimerRef.current);
     };
-  }, [id]);
+  }, [id, navigate]);
 
-  const fetchQuestion = async (signal) => {
+  async function fetchQuestion(signal) {
     if (endedRef.current) return;
     try {
       setQuestionLoading(true);
@@ -339,11 +343,16 @@ function InterviewRoom() {
     } finally {
       if (!signal?.aborted) setQuestionLoading(false);
     }
-  };
+  }
+
+  const fetchQuestionEvent = useEffectEvent(fetchQuestion);
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchQuestion(controller.signal);
+    // Defer the initial state transition until after the effect commits.
+    queueMicrotask(() => {
+      if (!controller.signal.aborted) fetchQuestionEvent(controller.signal);
+    });
     return () => {
       controller.abort();
       stopRecognition();
@@ -353,12 +362,14 @@ function InterviewRoom() {
     };
   }, [id]);
 
+  const speakQuestionEvent = useEffectEvent(speakQuestion);
+
   useEffect(() => {
     if (question && !questionLoading && !questionError) {
       if (spokenQuestionRef.current === question) return;
       spokenQuestionRef.current = question;
       const timer = setTimeout(() => {
-        speakQuestion(question);
+        speakQuestionEvent(question);
       }, 500);
       return () => clearTimeout(timer);
     }
@@ -394,7 +405,7 @@ function InterviewRoom() {
     window.speechSynthesis.speak(speech);
   };
 
-  const speakQuestion = async (text) => {
+  async function speakQuestion(text) {
     if (!text || endedRef.current) return;
     stopRecognition();
     clearAllTimers();
@@ -463,7 +474,7 @@ function InterviewRoom() {
     } catch (error) {
       await fallback(error);
     }
-  };
+  }
 
   const playQuestion = async () => {
     const blocked = blockedAudioRef.current;
@@ -553,11 +564,18 @@ function InterviewRoom() {
     }, 15000); // 15 seconds continuous pause
   };
 
+  const startThirtySecondAnswerTimerEvent = useEffectEvent(
+    startThirtySecondAnswerTimer
+  );
+  const resetPostThirtyPauseTimerEvent = useEffectEvent(
+    resetPostThirtyPauseTimer
+  );
+
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      setMicrophoneError("Speech recognition is not supported in this browser.");
+      console.warn("Speech recognition is not supported in this browser.");
       return;
     }
     const recognition = new SpeechRecognition();
@@ -604,7 +622,7 @@ function InterviewRoom() {
 
       // Guaranteed 30-sec Answering Timer start karein
       if (questionType !== "coding") {
-        startThirtySecondAnswerTimer();
+        startThirtySecondAnswerTimerEvent();
       }
 
       // Real-time tech term phonetic auto-correction
@@ -615,7 +633,7 @@ function InterviewRoom() {
 
       // Agar 30 sec pura ho chuka hai, tab 15s pause timer chalega
       if (questionType !== "coding" && hasCompletedMinTimeRef.current) {
-        resetPostThirtyPauseTimer();
+        resetPostThirtyPauseTimerEvent();
       }
     };
 
@@ -634,7 +652,9 @@ function InterviewRoom() {
           if (shouldListenRef.current && !answerProcessingRef.current) {
             try {
               recognition.start();
-            } catch (error) {}
+            } catch {
+              // The browser may reject a duplicate recognition start.
+            }
           }
         }, 200);
       }
@@ -644,7 +664,9 @@ function InterviewRoom() {
     return () => {
       try {
         recognition.stop();
-      } catch (error) {}
+      } catch {
+        // The browser may report that recognition is already stopped.
+      }
     };
   }, [questionType]);
 
@@ -670,7 +692,7 @@ function InterviewRoom() {
     }
   };
 
-  const stopRecognition = () => {
+  function stopRecognition() {
     shouldListenRef.current = false;
     clearTimeout(restartTimerRef.current);
     clearTimeout(initialSilenceTimerRef.current);
@@ -682,10 +704,12 @@ function InterviewRoom() {
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop();
-      } catch (error) {}
+      } catch {
+        // The browser may report that recognition is already stopped.
+      }
     }
     setIsListening(false);
-  };
+  }
 
   const evaluateAnswer = (questionId) => {
     const task = api
@@ -695,7 +719,7 @@ function InterviewRoom() {
           current?.questionId === questionId ? null : current
         )
       )
-      .catch((error) => {
+      .catch(() => {
         setEvaluationError({
           questionId,
           message: "Your answer was saved, but its evaluation failed.",
@@ -716,7 +740,9 @@ function InterviewRoom() {
 
     try {
       recognitionRef.current?.stop();
-    } catch (error) {}
+    } catch {
+      // Recognition may already be stopped while an answer is submitted.
+    }
 
     const currentQuestionId = currentQuestionIdRef.current;
     const rawAnswer = (
@@ -737,7 +763,7 @@ function InterviewRoom() {
           { answer: finalAnswer }
         );
         evaluateAnswer(currentQuestionId);
-      } catch (error) {
+      } catch {
         setAnswerError(
           "Your answer could not be saved. Please retry before continuing."
         );
@@ -751,19 +777,10 @@ function InterviewRoom() {
 
   // Run Python Code without Submitting
   const handleRunCode = async () => {
-    if (isRunningCode) return;
-    setIsRunningCode(true);
-    setConsoleOutput("Running script in environment...");
-    try {
-      const res = await api.post("interviews/run-code/", { code });
-      setConsoleOutput(res.data?.output || "Done.");
-    } catch (err) {
-      setConsoleOutput(
-        "Execution failed: " + (err.response?.data?.output || "Runtime exception")
-      );
-    } finally {
-      setIsRunningCode(false);
-    }
+    setConsoleOutput(
+      "Code execution is unavailable until the isolated runner is deployed. " +
+        "You can still submit the solution for evaluation.",
+    );
   };
 
   // Submit Final Code + Transcript
@@ -786,7 +803,7 @@ function InterviewRoom() {
       });
       evaluateAnswer(currentQuestionId);
       await goToNextQuestion();
-    } catch (err) {
+    } catch {
       alert("Error submitting solution. Please retry.");
     } finally {
       setIsSubmittingCode(false);
@@ -847,7 +864,7 @@ function InterviewRoom() {
     await fetchQuestion();
   };
 
-  const clearAllTimers = () => {
+  function clearAllTimers() {
     clearTimeout(initialSilenceTimerRef.current);
     initialSilenceTimerRef.current = null;
     clearTimeout(pauseTimerRef.current);
@@ -855,7 +872,7 @@ function InterviewRoom() {
     clearTimeout(restartTimerRef.current);
     clearInterval(answerCountdownIntervalRef.current);
     answerCountdownIntervalRef.current = null;
-  };
+  }
 
   const getStatusText = () => {
     if (bankExhausted) return "Practice questions completed";
@@ -1011,10 +1028,9 @@ function InterviewRoom() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleRunCode}
-                    disabled={isRunningCode}
                     className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-xl transition disabled:opacity-50"
                   >
-                    {isRunningCode ? "Running..." : "▶ Run Code"}
+                    Check runner
                   </button>
                   <button
                     onClick={handleManualCodeSubmit}
@@ -1027,20 +1043,12 @@ function InterviewRoom() {
               </div>
 
               <div className="flex-1 min-h-[340px]">
-                <Editor
-                  height="100%"
-                  defaultLanguage="python"
-                  theme="vs-dark"
+                <textarea
+                  aria-label="Python solution"
                   value={code}
-                  onChange={(val) => setCode(val || "")}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 13,
-                    lineNumbers: "on",
-                    scrollBeyondLastLine: false,
-                    automaticLayout: true,
-                    tabSize: 4,
-                  }}
+                  onChange={(event) => setCode(event.target.value)}
+                  spellCheck="false"
+                  className="h-full min-h-[340px] w-full resize-none bg-[#0c101b] p-4 font-mono text-[13px] leading-6 text-slate-100 outline-none"
                 />
               </div>
 

@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import api from "../services/api";
 
 export default function AdminDashboard() {
@@ -8,14 +7,14 @@ export default function AdminDashboard() {
   const [selectedInterview, setSelectedInterview] = useState(null);
   const [currentNav, setCurrentNav] = useState("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("highest");
+  const [sortBy] = useState("highest");
   const [loading, setLoading] = useState(true);
 
   // Question Bank
   const [questions, setQuestions] = useState([]);
-  const [qSearch, setQSearch] = useState("");
-  const [qTypeFilter, setQTypeFilter] = useState("all");
-  const [qDiffFilter, setQDiffFilter] = useState("all");
+  const [qSearch] = useState("");
+  const [qTypeFilter] = useState("all");
+  const [qDiffFilter] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState(null);
 
@@ -30,14 +29,8 @@ export default function AdminDashboard() {
   };
   const [qForm, setQForm] = useState(initialForm);
 
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchCandidatesOverview();
-    fetchQuestionBank();
-  }, []);
-
-  const fetchCandidatesOverview = async () => {
+  const fetchCandidatesOverview = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.get("evaluations/admin/candidates-overview/");
@@ -47,16 +40,38 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchQuestionBank = async () => {
+  const fetchQuestionBank = useCallback(async () => {
     try {
       const res = await api.get("interviews/question-bank/");
       setQuestions(res.data || []);
     } catch (err) {
       console.error("Question Bank fetch error:", err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      api.get("evaluations/admin/candidates-overview/"),
+      api.get("interviews/question-bank/"),
+    ])
+      .then(([candidateResponse, questionResponse]) => {
+        if (!active) return;
+        setCandidates(candidateResponse.data || []);
+        setQuestions(questionResponse.data || []);
+      })
+      .catch((error) => {
+        console.error("Admin dashboard fetch error:", error);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [fetchCandidatesOverview, fetchQuestionBank]);
 
   const handleSaveQuestion = async (e) => {
     e.preventDefault();
@@ -80,7 +95,7 @@ export default function AdminDashboard() {
     try {
       await api.delete(`interviews/question-bank/${id}/`);
       fetchQuestionBank();
-    } catch (err) {
+    } catch {
       alert("Error deleting question.");
     }
   };
@@ -113,10 +128,8 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
-    navigate("/login");
+    window.BurnettSuite?.logout?.();
   };
 
   const calculateCandidateOverall = (c) => {
@@ -211,7 +224,6 @@ export default function AdminDashboard() {
         const q = searchTerm.toLowerCase();
         return (
           c.full_name?.toLowerCase().includes(q) ||
-          c.username?.toLowerCase().includes(q) ||
           c.email?.toLowerCase().includes(q)
         );
       })
@@ -545,7 +557,7 @@ export default function AdminDashboard() {
                         onClick={() => openCandidateProfile(c)}
                       >
                         <td className="py-3.5 px-4 font-bold text-white">{c.full_name}</td>
-                        <td className="py-3.5 px-4 text-slate-400">{c.email || `@${c.username}`}</td>
+                        <td className="py-3.5 px-4 text-slate-400">{c.email}</td>
                         <td className="py-3.5 px-4">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             c.is_active !== false ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
@@ -603,7 +615,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <h3 className="text-lg font-black text-white">{selectedCandidate.full_name}</h3>
-                    <p className="text-xs text-slate-400">{selectedCandidate.email || `@${selectedCandidate.username}`}</p>
+                    <p className="text-xs text-slate-400">{selectedCandidate.email}</p>
                   </div>
                 </div>
                 <div className="text-center">

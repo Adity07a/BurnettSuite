@@ -5,7 +5,7 @@ import companyLogo from "../assets/company_logo.jpeg";
 
 function Login() {
   const [selectedRole, setSelectedRole] = useState("candidate"); // 'candidate' | 'admin'
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,8 +17,8 @@ function Login() {
     e.preventDefault();
     setError("");
 
-    if (!username.trim() || !password) {
-      setError("Please enter both your username and password.");
+    if (!identifier.trim() || !password) {
+      setError("Please enter your email/mobile and password.");
       return;
     }
 
@@ -26,7 +26,7 @@ function Login() {
       setLoading(true);
 
       const response = await api.post("users/login/", {
-        username: username.trim(),
+        identifier: identifier.trim(),
         password,
       });
 
@@ -63,7 +63,7 @@ function Login() {
       console.error("Login failed:", requestError);
       setError(
         requestError.response?.data?.detail ||
-          "Invalid username or password. Please try again."
+          "Invalid email/mobile or password. Please try again."
       );
     } finally {
       setLoading(false);
@@ -265,10 +265,10 @@ function Login() {
                 <form onSubmit={handleLogin} className="space-y-5">
                   <div>
                     <label
-                      htmlFor="username"
+                      htmlFor="identifier"
                       className="mb-2 block text-sm font-semibold text-slate-200"
                     >
-                      Username
+                      Email or mobile number
                     </label>
 
                     <div className="relative">
@@ -287,12 +287,12 @@ function Login() {
                       </span>
 
                       <input
-                        id="username"
+                        id="identifier"
                         type="text"
                         autoComplete="username"
-                        placeholder={selectedRole === "admin" ? "Staff username" : "Enter your username"}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Enter your email or mobile number"
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
                         className="w-full rounded-2xl border border-white/10 bg-slate-900/70 py-3.5 pl-12 pr-4 text-white placeholder:text-slate-600 outline-none transition focus:border-blue-400/60 focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10"
                         required
                       />

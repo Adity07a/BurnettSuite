@@ -1,3 +1,8 @@
+def _has_text(value):
+    """Return whether an optional model value contains non-whitespace text."""
+    return bool(str(value or "").strip())
+
+
 def calculate_profile_completion(profile):
     """
     Calculate profile completion without treating optional career
@@ -14,58 +19,55 @@ def calculate_profile_completion(profile):
             "key": "full_name",
             "label": "Full name",
             "required": True,
-            "complete": bool(
-                user.first_name.strip()
-                and user.last_name.strip()
-            ),
+            "complete": _has_text(user.first_name) and _has_text(user.last_name),
         },
         {
             "key": "email",
             "label": "Email address",
             "required": True,
-            "complete": bool(user.email.strip()),
+            "complete": _has_text(user.email),
         },
         {
             "key": "phone",
             "label": "Phone number",
             "required": False,
-            "complete": bool(profile.phone.strip()),
+            "complete": _has_text(profile.phone),
         },
         {
             "key": "location",
             "label": "Location",
             "required": False,
-            "complete": bool(profile.location.strip()),
+            "complete": _has_text(profile.location),
         },
         {
             "key": "headline",
             "label": "Professional headline",
             "required": False,
-            "complete": bool(profile.headline.strip()),
+            "complete": _has_text(profile.headline),
         },
         {
             "key": "summary",
             "label": "Professional summary",
             "required": False,
-            "complete": bool(profile.bio.strip()),
+            "complete": _has_text(profile.bio),
         },
         {
             "key": "linkedin",
             "label": "LinkedIn URL",
             "required": False,
-            "complete": bool(profile.linked_url.strip()),
+            "complete": _has_text(profile.linked_url),
         },
         {
             "key": "github",
             "label": "GitHub URL",
             "required": False,
-            "complete": bool(profile.github_url.strip()),
+            "complete": _has_text(profile.github_url),
         },
         {
             "key": "portfolio",
             "label": "Portfolio URL",
             "required": False,
-            "complete": bool(profile.portfolio_url.strip()),
+            "complete": _has_text(profile.portfolio_url),
         },
     ]
 

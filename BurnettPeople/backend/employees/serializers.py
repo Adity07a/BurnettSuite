@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from accounts.models import AccountInvitation
+from accounts.identifiers import normalize_mobile
 from employees.models import Employee
 from employees.services import create_employee_with_invitation
 
@@ -87,6 +88,19 @@ class EmployeeSerializer(serializers.ModelSerializer):
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("An account with this email already exists.")
         return value
+
+    def validate_phone_number(self, value):
+        if not value:
+            return ""
+        mobile = normalize_mobile(value)
+        matches = Employee.objects.filter(phone_number=mobile)
+        if self.instance is not None:
+            matches = matches.exclude(pk=self.instance.pk)
+        if matches.exists():
+            raise serializers.ValidationError(
+                "An employee with this mobile number already exists."
+            )
+        return mobile
 
     def validate(self, attrs):
         manager = attrs.get("manager", getattr(self.instance, "manager", None))

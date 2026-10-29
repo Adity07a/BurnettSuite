@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from core.views import health_check, liveness_check, readiness_check
+from core.views import health_check
 from core.health import liveness_check, readiness_check
 from accounts.views import AdminCreateHRView
 from accounts.audit_views import AuditEventListView
@@ -44,18 +44,6 @@ urlpatterns = [
     path("api/recognition/challenges/participations/<int:pk>/verify/", ChallengeVerifyView.as_view(), name="recognition-challenge-verify"),
     path("api/recognition/review-queue/", RecognitionReviewQueueView.as_view(), name="recognition-review-queue"),
     path("api/audit/logs/", AuditEventListView.as_view(), name="audit-log-list"),
-    path("api/", include("hr_operations.urls")),
-    path("api/health/live/", liveness_check, name="health-live"),
-    path("api/health/ready/", readiness_check, name="health-ready"),
-
-    # Admin
-    path(
-        "api/admin/hr/",
-        AdminCreateHRView.as_view(),
-        name="admin-create-hr",
-    ),
-
-    # HR operations
     path("api/", include("hr_operations.urls")),
 
     # Work status updates

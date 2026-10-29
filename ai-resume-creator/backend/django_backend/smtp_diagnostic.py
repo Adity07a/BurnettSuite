@@ -3,10 +3,9 @@ import ssl
 
 from django.conf import settings
 
-options = settings.MAILERS["default"]["OPTIONS"]
-host = options["host"]
-username = options["username"]
-password = options["password"]
+host = settings.EMAIL_HOST
+username = settings.EMAIL_HOST_USER
+password = settings.EMAIL_HOST_PASSWORD
 
 
 def test_smtp(name, port, use_ssl):
