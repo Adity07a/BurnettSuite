@@ -40,7 +40,7 @@ def _send_verification_email(user):
         return send_mail(
             subject="Verify your AI Resume Creator email",
             message=(
-                f"Hi {user.first_name or user.username},\n\n"
+                f"Hi {user.first_name or user.email},\n\n"
                 "Please open this link to verify your email address. "
                 f"The link expires in {settings.EMAIL_VERIFICATION_TOKEN_MAX_AGE // 3600} hours.\n\n"
                 f"{verification_url}\n\nIf you did not create this account, ignore this email."
@@ -70,7 +70,6 @@ class RegisterView(generics.CreateAPIView):
                 "email_verification_email_sent": email_sent,
                 "user": {
                     "id": user.id,
-                    "username": user.username,
                     "email": user.email,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
@@ -88,8 +87,12 @@ class CurrentUserView(APIView):
         user = request.user
         return Response({
             "id": user.id,
-            "username": user.username,
             "email": user.email,
+            "mobile": getattr(
+                UserProfile.objects.filter(user=user).first(),
+                "phone",
+                None,
+            ),
             "first_name": user.first_name,
             "last_name": user.last_name,
             "is_email_verified": user.is_email_verified,
@@ -105,7 +108,6 @@ class UserProfileView(APIView):
         return {
             "user": {
                 "id": user.id,
-                "username": user.username,
                 "email": user.email,
                 "first_name": user.first_name,
                 "last_name": user.last_name,

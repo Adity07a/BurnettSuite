@@ -21,7 +21,8 @@ INSTALLED_APPS = [
     "hr_operations", "recognition", "status_updates",
 ]
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware", "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.security.SecurityMiddleware", "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware", "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware", "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware", "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -36,10 +37,30 @@ TEMPLATES = [{
 }]
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Shared PostgreSQL database (Neon)
-DATABASES = {
-    "default": env.db("DATABASE_URL"),
-}
+# Prefer a managed DATABASE_URL when supplied. Docker uses discrete values so
+# passwords containing URL-reserved characters do not need manual encoding.
+DATABASE_URL = env("DATABASE_URL", default="").strip()
+DB_HOST = env("DB_HOST", default="").strip()
+if DATABASE_URL:
+    DATABASES = {"default": env.db("DATABASE_URL")}
+elif DB_HOST:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DB_NAME", default="people"),
+            "USER": env("DB_USER", default="people"),
+            "PASSWORD": env("DB_PASSWORD"),
+            "HOST": DB_HOST,
+            "PORT": env("DB_PORT", default="5432"),
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 DATABASES["default"]["CONN_MAX_AGE"] = env.int(
     "DB_CONN_MAX_AGE", default=60
@@ -47,7 +68,11 @@ DATABASES["default"]["CONN_MAX_AGE"] = env.int(
 DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
 DATABASES["default"].setdefault("OPTIONS", {})
 if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
-    DATABASES["default"]["OPTIONS"].setdefault("sslmode", "require")
+    database_sslmode = env("DB_SSLMODE", default="require").strip()
+    if database_sslmode:
+        DATABASES["default"]["OPTIONS"].setdefault(
+            "sslmode", database_sslmode
+        )
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -59,15 +84,23 @@ TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.User"
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework_simplejwt.authentication.JWTAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["accounts.authentication.SuiteJWTAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=6), "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True, "BLACKLIST_AFTER_ROTATION": True, "AUTH_HEADER_TYPES": ("Bearer",),
+    "SIGNING_KEY": env("SUITE_JWT_SIGNING_KEY", default=SECRET_KEY),
 }
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=["http://localhost:5173", "http://127.0.0.1:5173"])
 CORS_URLS_REGEX = r"^/api/.*$"
@@ -88,9 +121,15 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 FRONTEND_BASE_URL = env("FRONTEND_BASE_URL", default="http://localhost:5173").rstrip("/")
 
-# Keys are server-side only; mock mode is an explicit development fallback.
-AI_PROVIDER = env("AI_PROVIDER", default="mock")
-AI_API_KEY = env("AI_API_KEY", default="")
-AI_BASE_URL = env("AI_BASE_URL", default="https://api.openai.com/v1")
-AI_MODEL = env("AI_MODEL", default="gpt-4.1-mini")
+# Keys are server-side only. Amazon Bedrock is shared across the suite; the
+# product-specific names remain optional overrides for isolated deployments.
+AI_PROVIDER = env("AI_PROVIDER", default="bedrock")
+AI_API_KEY = env("AI_API_KEY", default="").strip() or env(
+    "AWS_BEARER_TOKEN_BEDROCK", default=""
+).strip()
+AWS_REGION = env("AWS_REGION", default="us-east-1")
+AI_BASE_URL = env("AI_BASE_URL", default="").strip() or (
+    f"https://bedrock-runtime.{AWS_REGION}.amazonaws.com/openai/v1"
+)
+AI_MODEL = env("AI_MODEL", default="zai.glm-4.7-flash")
 AI_TIMEOUT_SECONDS = env.int("AI_TIMEOUT_SECONDS", default=8)

@@ -22,7 +22,7 @@ Authentication: Public.
 Request:
 
 ```json
-{"email":"employee@example.com","password":"<password>"}
+{"identifier":"employee@example.com or mobile number","password":"<password>"}
 ```
 
 Success: HTTP `200`.

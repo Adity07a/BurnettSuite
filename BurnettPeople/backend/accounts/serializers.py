@@ -1,5 +1,7 @@
 
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -9,21 +11,67 @@ from accounts.services.activation import (
     activate_account,
 )
 from employees.models import Employee
+from .identifiers import normalize_mobile
+
+
+class IdentifierTokenObtainPairSerializer(serializers.Serializer):
+    identifier = serializers.CharField(required=False, write_only=True)
+    email = serializers.CharField(required=False, write_only=True)
+    password = serializers.CharField(write_only=True, trim_whitespace=False)
+
+    def validate(self, attrs):
+        identifier = str(
+            attrs.get("identifier") or attrs.get("email") or ""
+        ).strip()
+        user = None
+
+        if "@" in identifier:
+            user = User.objects.filter(email__iexact=identifier).first()
+        elif identifier:
+            try:
+                mobile = normalize_mobile(identifier)
+            except serializers.ValidationError:
+                mobile = None
+            if mobile:
+                matches = list(
+                    Employee.objects.select_related("user")
+                    .filter(phone_number=mobile, user__isnull=False)[:2]
+                )
+                if len(matches) == 1:
+                    user = matches[0].user
+
+        if user is None or not user.is_active or not user.check_password(
+            attrs["password"]
+        ):
+            raise AuthenticationFailed("Invalid email/mobile or password.")
+
+        refresh = RefreshToken.for_user(user)
+        return {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        }
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     """Expose safe profile information for the authenticated user."""
+
+    mobile = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
             "id",
             "email",
+            "mobile",
             "first_name",
             "last_name",
             "role",
             "is_active",
         )
         read_only_fields = fields
+
+    def get_mobile(self, user):
+        employee = getattr(user, "employee_profile", None)
+        return employee.phone_number if employee else None
 
 
 class AccountActivationSerializer(serializers.Serializer):

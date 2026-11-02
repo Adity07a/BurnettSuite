@@ -15,6 +15,7 @@ import {
 import MyPeople from "./MyPeople";
 import Leaderboard, { MyRecognitionSummary } from "./Leaderboard";
 import RemoteWork from "./RemoteWork";
+import StatusUpdates from "./StatusUpdates";
 import { decideLeaveRequest, useLeaveData } from "./features/leave/leaveApi";
 import "./AdminPages.css";
 import "./ManagerDashboard.css";
@@ -212,8 +213,6 @@ export default function ManagerDashboard({ user, onLogout }) {
       case "reports": return <ReportsPage data={data} />;
       case "profile": return <><MyRecognitionSummary /><ProfilePage user={user} name={name} initials={userInitials(user)} roleText={roleLabel(user?.role)} data={data} /></>;
       case "notifications": return <NotificationsPage notifications={notifications} />;
-      case "profile": return <ProfilePage user={user} name={name} initials={userInitials(user)} roleText={roleLabel(user?.role)} data={data} />;
-      case "notifications": return <NotificationsPage data={data} />;
       case "status-updates": return <StatusUpdates user={user} />;
       default: return <Overview data={data} go={setSection} onDecide={decideLeave} name={name} />;
     }
@@ -232,7 +231,6 @@ export default function ManagerDashboard({ user, onLogout }) {
       searchPlaceholder="Search team members, leave, attendance..."
       unread={notifications.rows.filter((item) => !item.read_at).length}
       homePath="/manager"
-      footerLabel="Manager workspace"
     >
       {error && !isLeaveSection && <div role="alert" className="admin-form-error">{error}</div>}
       {leave.errors.requests && (isLeaveSection || section === "overview") && (

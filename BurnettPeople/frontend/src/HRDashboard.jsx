@@ -421,6 +421,8 @@ function HRDashboard({ user, onLogout }) {
         return <><MyRecognitionSummary /><HRProfile user={user} /></>;
       case "leave":
         return <HRLeave />;
+      case "status-updates":
+        return <StatusUpdates user={user} />;
       default:
         return <ComingSoon title={title} />;
     }
@@ -439,7 +441,6 @@ function HRDashboard({ user, onLogout }) {
       searchPlaceholder="Search employees, leaves, schedules..."
       unread={unread}
       homePath="/hr"
-      footerLabel="HR workspace"
     >
       {renderPage()}
     </DashboardShell>

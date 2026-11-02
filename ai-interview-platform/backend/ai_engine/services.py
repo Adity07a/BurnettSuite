@@ -257,30 +257,6 @@ def generate_interview_question(
             return question
         prompt += f"\nRejected output (do not paraphrase or repeat): {question}. Ask a completely different specific scenario."
     raise ValueError("Bedrock did not return a new, valid question. Please retry.")
-    
-    for attempt in range(1, 3):
-        raw = _bedrock_completion(
-            [{"role": "system", "content": "You are a senior technical interviewer. Tailor questions specifically to the Job Description and candidate skills provided. Return exactly one question."},
-             *(conversation_history or []),
-             {"role": "user", "content": prompt}],
-            operation="question", context=f"{context} attempt={attempt}", max_tokens=256, temperature=0.7, model_id=model_id,
-        )
-        if "</think>" in raw:
-            raw = raw.split("</think>")[-1]
-        
-        cleaned = re.sub(r"^\s*(?:```(?:text)?\s*|Question\s*\d*\s*:\s*)", "", raw, flags=re.IGNORECASE)
-        cleaned = cleaned.strip().strip('"\'`* ').strip()
-        
-        question = cleaned.split("?", 1)[0].strip() + "?" if "?" in cleaned else cleaned
-        if not question or not question.endswith("?") or question.count("?") != 1:
-            logger.warning("question_output_rejected %s attempt=%s reason=invalid_question", context, attempt)
-        elif questions_are_similar(question, previous_questions):
-            logger.warning("question_output_rejected %s attempt=%s reason=duplicate", context, attempt)
-        else:
-            logger.info("question_generation_succeeded %s model=%s focus=%s", context, model_id or settings.BEDROCK_MODEL_ID, focus_rule)
-            return question
-        prompt += f"\nRejected output (do not paraphrase or repeat): {question}. Ask a completely different specific scenario."
-    raise ValueError("Bedrock did not return a new, valid question. Please retry.")
 
 
 def interview_conversation(interview):

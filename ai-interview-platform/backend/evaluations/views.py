@@ -324,9 +324,8 @@ class AdminCandidatesOverviewView(APIView):
                 })
             data.append({
                 "id": u.id,
-                "username": u.username,
                 "email": u.email,
-                "full_name": u.get_full_name() or u.username,
+                "full_name": u.get_full_name() or u.email,
                 "is_active": u.is_active,
                 "interviews": interview_list,
             })

@@ -1,27 +1,22 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function getUserName() {
   try {
-    const token = localStorage.getItem("access_token");
-    if (!token) return "Candidate";
-    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
-    return payload.username || "Candidate";
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    return user?.email || "Candidate";
   } catch {
     return "Candidate";
   }
 }
 
 function Navbar() {
-  const navigate = useNavigate();
   const userName = getUserName();
   const initial = userName.charAt(0).toUpperCase();
 
   const logout = () => {
     const confirmed = window.confirm("Are you sure you want to logout?");
     if (!confirmed) return;
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    navigate("/login", { replace: true });
+    window.BurnettSuite?.logout?.();
   };
 
   return (

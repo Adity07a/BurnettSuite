@@ -1,11 +1,12 @@
 
-import os
 import hmac
+import os
 
-from fastapi import Depends, Header, HTTPException
 from dotenv import load_dotenv
+from fastapi import Depends, Header, HTTPException
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.routes.parse_resume import (
     router as parse_resume_router,
 )
@@ -24,11 +25,9 @@ from app.api.routes.generate_summary import (
 from app.api.routes.optimize_resume import (
     router as optimize_resume_router,
 )
+from app.core.ai_settings import AISettings
 
 load_dotenv()
-
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama").lower()
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
 
 app = FastAPI(
     title="AI Resume Creator - AI Service",
@@ -37,6 +36,7 @@ app = FastAPI(
     ),
     version="1.0.0",
 )
+
 
 async def verify_internal_service_token(
     x_internal_service_token: str | None = Header(default=None),
@@ -128,10 +128,9 @@ def root():
 
 @app.get("/health")
 def health_check():
+    settings = AISettings.from_environment()
     return {
         "status": "healthy",
-        "provider": LLM_PROVIDER,
-        "model": (
-            OLLAMA_MODEL if LLM_PROVIDER == "ollama" else None
-        ),
+        "provider": settings.provider,
+        "model": settings.model,
     }

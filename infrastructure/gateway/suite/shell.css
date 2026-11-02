@@ -1,0 +1,23 @@
+#burnett-suite-header, #burnett-suite-footer { box-sizing: border-box; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+#burnett-suite-header * , #burnett-suite-footer * { box-sizing: border-box; }
+#burnett-suite-header { position: sticky; top: 0; z-index: 10000; display: flex; align-items: center; gap: 22px; min-height: 64px; padding: 10px clamp(16px,4vw,52px); color: #ecfdf5; background: #092c25; border-bottom: 1px solid #1f5146; }
+#burnett-suite-header .suite-brand { color: #fff; font-size: 1.05rem; font-weight: 800; text-decoration: none; white-space: nowrap; }
+#burnett-suite-header nav { display: flex; flex: 1; align-items: center; gap: 8px; flex-wrap: wrap; }
+#burnett-suite-header a, #burnett-suite-header button { border: 0; border-radius: 9px; padding: 9px 12px; color: #c8e8df; background: transparent; font: inherit; font-size: .9rem; font-weight: 650; text-decoration: none; cursor: pointer; }
+#burnett-suite-header a:hover, #burnett-suite-header button:hover { color: #fff; background: #17483d; }
+#burnett-suite-header .suite-auth { display: flex; align-items: center; gap: 7px; margin-left: auto; }
+#burnett-suite-header .suite-primary { color: #06251f; background: #75e2bc; }
+#burnett-suite-header .suite-user { color: #9fd8c7; font-size: .82rem; max-width: 210px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#burnett-suite-footer { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding: 24px clamp(16px,4vw,52px); color: #b2d4ca; background: #071f1a; border-top: 1px solid #1f5146; font-size: .88rem; }
+#burnett-suite-footer a { color: #75e2bc; text-decoration: none; }
+.suite-auth-page { min-height: calc(100vh - 128px); display: grid; place-items: center; padding: 48px 18px; background: radial-gradient(circle at top left,#1c5b4c,#071915 58%); color: #effcf8; font-family: Inter,ui-sans-serif,system-ui,sans-serif; }
+.suite-auth-card { width: min(480px,100%); padding: 32px; border: 1px solid #2b6456; border-radius: 22px; background: rgba(7,31,26,.94); box-shadow: 0 22px 70px rgba(0,0,0,.3); }
+.suite-auth-card h1 { margin: 0 0 8px; font-size: 2rem; }
+.suite-auth-card p { color: #a9cfc3; }
+.suite-auth-card label { display: block; margin: 16px 0 6px; font-size: .9rem; font-weight: 700; }
+.suite-auth-card input { width: 100%; padding: 12px 13px; border: 1px solid #356b5e; border-radius: 10px; color: #fff; background: #0d3028; font: inherit; }
+.suite-auth-card button { width: 100%; margin-top: 22px; padding: 13px; border: 0; border-radius: 10px; color: #06251f; background: #75e2bc; font: inherit; font-weight: 800; cursor: pointer; }
+.suite-auth-card .suite-auth-error { margin-top: 14px; padding: 10px; border-radius: 9px; color: #fee2e2; background: #7f1d1d; }
+.suite-auth-card .suite-auth-switch { margin-top: 18px; text-align: center; }
+.suite-auth-card a { color: #75e2bc; }
+@media(max-width:780px){#burnett-suite-header{align-items:flex-start;flex-direction:column;gap:8px}#burnett-suite-header .suite-auth{margin-left:0}#burnett-suite-header .suite-user{display:none}}

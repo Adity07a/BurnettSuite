@@ -4,12 +4,9 @@ import {
   Route,
   Navigate,
   useLocation,
-  useNavigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import CreateResume from "./pages/CreateResume";
 import ResumeBuilder from "./pages/ResumeBuilder";
@@ -47,10 +44,7 @@ function LandingPage() {
         </nav>
 
         <div className="nav-actions">
-          <Link to="/login" className="login-btn">
-            Login
-          </Link>
-          <Link to="/register" className="primary-btn">
+          <Link to="/dashboard" className="primary-btn">
             Get Started →
           </Link>
         </div>
@@ -73,7 +67,7 @@ function LandingPage() {
             </p>
 
             <div className="hero-actions">
-              <Link to="/register" className="primary-btn hero-btn glow-effect">
+              <Link to="/dashboard" className="primary-btn hero-btn glow-effect">
                 Create My Resume →
               </Link>
               <a href="#features" className="secondary-btn sleek-btn">
@@ -206,15 +200,35 @@ export { LandingPage };
 -------------------------------------------------- */
 
 function ProtectedRoute({ children }) {
-  const accessToken =
-    localStorage.getItem("resumeai-access-token") ||
-    sessionStorage.getItem("resumeai-access-token");
+  const [ready, setReady] = useState(false);
 
-  if (!accessToken) {
-    return <Navigate to="/login" replace />;
-  }
+  useEffect(() => {
+    let active = true;
+    apiRequest("/auth/me/").then((user) => {
+      localStorage.setItem("resumeai-user", JSON.stringify(user));
+      // Legacy feature modules still use token presence as a route guard. The
+      // value is only a marker; APIs authenticate the HttpOnly suite cookie.
+      localStorage.setItem("resumeai-access-token", "suite-cookie-session");
+      if (active) setReady(true);
+    }).catch(() => {
+      window.location.assign(window.BurnettSuite?.loginUrl?.() || "/login");
+    });
+    return () => { active = false; };
+  }, []);
 
-  return children;
+  return ready ? children : <div className="route-loading">Loading your BurnettSuite session…</div>;
+}
+
+function CentralAuthRedirect({ register = false }) {
+  useEffect(() => {
+    const target = register
+      ? window.BurnettSuite?.registerUrl?.()
+      : window.BurnettSuite?.loginUrl?.();
+    window.location.replace(
+      target || (register ? "http://localhost/register" : "http://localhost/login")
+    );
+  }, [register]);
+  return <div className="route-loading">Opening BurnettSuite authentication…</div>;
 }
 
 /* --------------------------------------------------
@@ -234,7 +248,6 @@ const workspaceNavigation = [
 
 function WorkspaceLayout({ children, darkMode, setDarkMode }) {
   const location = useLocation();
-  const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
 
   const currentPage =
@@ -249,18 +262,8 @@ function WorkspaceLayout({ children, darkMode, setDarkMode }) {
     if (loggingOut) return;
     setLoggingOut(true);
 
-    const refreshToken =
-      localStorage.getItem("resumeai-refresh-token") ||
-      sessionStorage.getItem("resumeai-refresh-token");
-
     try {
-      if (refreshToken) {
-        await apiRequest("/auth/logout/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ refresh: refreshToken }),
-        });
-      }
+      await window.BurnettSuite?.logout?.();
     } catch (error) {
       console.error("Logout request failed:", error);
     } finally {
@@ -272,7 +275,7 @@ function WorkspaceLayout({ children, darkMode, setDarkMode }) {
       sessionStorage.removeItem("resumeai-user");
 
       setLoggingOut(false);
-      navigate("/login", { replace: true });
+      window.location.assign(window.BurnettSuite?.urls?.platform || "/");
     }
   }
 
@@ -387,11 +390,12 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        {/* Product entry opens the functional workspace, not a marketing page. */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
         {/* Public authentication and info pages */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<CentralAuthRedirect />} />
+        <Route path="/register" element={<CentralAuthRedirect register />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/resend-verification" element={<ResendVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -423,7 +427,7 @@ function App() {
         <Route path="/saved-jd-history" element={withWorkspace(<SavedJDHistory />)} />
 
         {/* Fallback routing */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </>
   );

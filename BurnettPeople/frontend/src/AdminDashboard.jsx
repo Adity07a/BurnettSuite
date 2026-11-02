@@ -13,7 +13,6 @@ import MyPeople from "./MyPeople";
 import Leaderboard from "./Leaderboard";
 import RemoteWork from "./RemoteWork";
 import "./AdminDashboard.css";
-import "./DashboardScale.css";
 import "./AdminPages.css";
 import burnettLogo from "./assets/burnettpeople-logo.png";
 import loginDarkTeal from "./assets/login-dark-teal.png";
@@ -60,7 +59,6 @@ const PAGE_META = {
   people: ["My People", "Explore your organization, connect with colleagues and celebrate achievements."],
   leaderboard: ["Good Habits & Leaderboard", "Recognize positive, verified work habits across the company."],
   "remote-work": ["Remote Work", "Review approved work location requests."],
-  "hr-roles": ["HR & Roles", "Onboard HR users and review access roles."],
   "hr-roles": ["HR & Manager Overview", "Manage HR employees, assign managers, and view reporting structure."],
   company: ["Company Settings", "Manage your organization structure, roles, locations, schedules and basic information."],
   departments: ["Company Settings", "Manage your organization structure, roles, locations, schedules and basic information."],
@@ -615,10 +613,6 @@ export default function AdminDashboard({ user, onLogout }) {
 
         <main className="admin-workspace" style={{ backgroundImage: `url(${loginSoftMint})` }}>
           {renderPage()}
-          <footer className="admin-footer">
-            <span>© 2026 BurnettPeople</span>
-            <span>Admin workspace</span>
-          </footer>
         </main>
       </div>
 

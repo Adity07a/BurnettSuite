@@ -1071,7 +1071,6 @@ function Dashboard({ darkMode, setDarkMode }) {
             >
               {(
                 user?.first_name?.[0] ||
-                user?.username?.[0] ||
                 user?.email?.[0] ||
                 "U"
               ).toUpperCase()}
@@ -1083,7 +1082,7 @@ function Dashboard({ darkMode, setDarkMode }) {
                   <strong>
                     {user?.first_name
                       ? `${user.first_name} ${user.last_name || ""}`.trim()
-                      : user?.username || "My Account"}
+                      : user?.email || "My Account"}
                   </strong>
                   <span>{user?.email || "Logged-in user"}</span>
                 </div>
@@ -1116,7 +1115,7 @@ function Dashboard({ darkMode, setDarkMode }) {
               <section className="dashboard-welcome polished-welcome-banner" style={{ padding: "32px", borderRadius: "16px", background: "var(--card-bg)", border: "1px solid var(--border-color)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "36px", boxShadow: "var(--shadow)" }}>
                 <div>
                   <span className="welcome-label" style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: "#a855f7", fontWeight: "700" }}>
-                    WELCOME BACK, {(user?.first_name || user?.username || "USER").toUpperCase()}
+                    WELCOME BACK, {(user?.first_name || user?.email || "USER").toUpperCase()}
                   </span>
                   <h2 style={{ fontSize: "1.8rem", fontWeight: "700", margin: "6px 0 8px", color: "var(--text-main)" }}>Your Resume Command Center</h2>
                   <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>
@@ -1276,7 +1275,6 @@ function Dashboard({ darkMode, setDarkMode }) {
                     >
                       {(
                         user?.first_name?.[0] ||
-                        user?.username?.[0] ||
                         user?.email?.[0] ||
                         "U"
                       ).toUpperCase()}
@@ -1285,7 +1283,7 @@ function Dashboard({ darkMode, setDarkMode }) {
                       <h3 style={{ margin: "0 0 4px", fontSize: "1.4rem", color: "var(--text-main)" }}>
                         {user?.first_name
                           ? `${user.first_name} ${user.last_name || ""}`.trim()
-                          : user?.username || "My Account"}
+                          : user?.email || "My Account"}
                       </h3>
                       <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.95rem" }}>
                         {user?.email || "No email available"}
@@ -1294,7 +1292,7 @@ function Dashboard({ darkMode, setDarkMode }) {
                   </div>
 
                   <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "1.2rem", display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.95rem" }}>
-                    <p style={{ margin: 0, color: "var(--text-main)" }}><strong>Username:</strong> {user?.username || "N/A"}</p>
+                    <p style={{ margin: 0, color: "var(--text-main)" }}><strong>Login:</strong> Email or mobile number</p>
                     <p style={{ margin: 0, color: "var(--text-main)" }}><strong>Account Status:</strong> Active & Verified</p>
                   </div>
 

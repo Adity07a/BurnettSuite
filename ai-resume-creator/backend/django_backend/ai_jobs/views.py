@@ -96,7 +96,7 @@ class AIJobCreateView(APIView):
             input_payload=payload,
             status=AIJob.Status.QUEUED,
             max_retries=3,
-            model_used=settings.OLLAMA_MODEL,
+            model_used=settings.AI_MODEL,
         )
 
         try:

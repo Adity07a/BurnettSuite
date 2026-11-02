@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Burnet Platform</title>
+    <link rel="stylesheet" href="/suite-assets/shell.css" />
+    <script src="/suite-assets/shell.js" defer></script>
+    <script src="/suite-assets/auth.js" defer></script>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; background: #071915; color: #effcf8; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 15% 10%, #17483d 0, transparent 34%), #071915; }
+      main { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 72px 0; }
+      .eyebrow { color: #75e2bc; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+      h1 { max-width: 760px; margin: 16px 0; font-size: clamp(2.8rem, 7vw, 5.8rem); line-height: .96; letter-spacing: -.055em; }
+      .intro { max-width: 680px; color: #b9d2ca; font-size: 1.12rem; line-height: 1.7; }
+      .apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 56px; }
+      .card { min-height: 270px; display: flex; flex-direction: column; padding: 26px; border: 1px solid #2b5349; border-radius: 24px; background: rgba(13, 42, 35, .78); color: inherit; text-decoration: none; transition: transform .2s, border-color .2s; }
+      .card:hover { transform: translateY(-5px); border-color: #75e2bc; }
+      .number { color: #75e2bc; font: 700 .85rem ui-monospace, monospace; }
+      h2 { margin: 34px 0 10px; font-size: 1.55rem; }
+      .card p { margin: 0; color: #a9c2ba; line-height: 1.55; }
+      .open { margin-top: auto; font-weight: 700; color: #75e2bc; }
+      footer { margin-top: 50px; color: #78958c; }
+      @media (max-width: 760px) { main { padding-top: 42px; } .apps { grid-template-columns: 1fr; } .card { min-height: 220px; } }
+    </style>
+  </head>
+  <body>
+    <main id="platform-home">
+      <div class="eyebrow">Burnet Platform</div>
+      <h1>One place to build, practice, and grow.</h1>
+      <p class="intro">Sign in once, then open any product directly in its working dashboard.</p>
+      <section class="apps" aria-label="Burnet applications">
+        <a class="card" data-app="interview" data-entry="/dashboard" href="http://interview.localhost/dashboard"><span class="number">01</span><h2>AI Interview</h2><p>Practice role-specific interviews and receive structured, AI-assisted feedback.</p><span class="open">Open workspace →</span></a>
+        <a class="card" data-app="resume" data-entry="/dashboard" href="http://resume.localhost/dashboard"><span class="number">02</span><h2>AI Resume Creator</h2><p>Create, tailor, analyze, version, and export professional resumes.</p><span class="open">Open workspace →</span></a>
+        <a class="card" data-app="people" href="http://people.localhost"><span class="number">03</span><h2>Burnett People</h2><p>Manage employees, attendance, leave, assets, recognition, and HR operations.</p><span class="open">Open application →</span></a>
+      </section>
+      <footer>BurnettSuite platform foundation</footer>
+    </main>
+    <script>
+      const parts = window.location.hostname.split(".");
+      if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+        const localPorts = { interview: "8081", resume: "8082", people: "8083" };
+        document.querySelectorAll("[data-app]").forEach((link) => {
+          link.href = `${window.location.protocol}//${window.location.hostname}:${localPorts[link.dataset.app]}${link.dataset.entry || ""}`;
+        });
+      } else if (parts[0] === "platform") {
+        document.querySelectorAll("[data-app]").forEach((link) => {
+          link.href = `${window.location.protocol}//${link.dataset.app}.${parts.slice(1).join(".")}${window.location.port ? `:${window.location.port}` : ""}${link.dataset.entry || ""}`;
+        });
+      }
+    </script>
+  </body>
+</html>

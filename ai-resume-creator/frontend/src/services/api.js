@@ -4,25 +4,7 @@ const API_BASE_URL = (
 ).replace(/\/$/, "");
 
 function getAccessToken() {
-  return (
-    localStorage.getItem("resumeai-access-token") ||
-    sessionStorage.getItem("resumeai-access-token")
-  );
-}
-
-function getRefreshToken() {
-  return (
-    localStorage.getItem("resumeai-refresh-token") ||
-    sessionStorage.getItem("resumeai-refresh-token")
-  );
-}
-
-function saveAccessToken(token) {
-  if (localStorage.getItem("resumeai-access-token")) {
-    localStorage.setItem("resumeai-access-token", token);
-  } else {
-    sessionStorage.setItem("resumeai-access-token", token);
-  }
+  return null;
 }
 
 function clearTokens() {
@@ -36,46 +18,24 @@ function clearTokens() {
 let refreshPromise = null;
 
 async function refreshAccessToken() {
-  const refreshToken = getRefreshToken();
-
-  if (!refreshToken) {
-    return null;
-  }
-
   // Multiple failed requests share the same refresh operation.
   if (!refreshPromise) {
     refreshPromise = (async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/auth/refresh/`, {
+        const response = await fetch(`/api/suite-auth/refresh/`, {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ refresh: refreshToken }),
+          body: "{}",
         });
 
-        const result = await response.json().catch(() => null);
-
-        if (!response.ok || !result?.access) {
+        if (!response.ok) {
           clearTokens();
           return null;
         }
-
-        saveAccessToken(result.access);
-
-        // Support refresh-token rotation if enabled by the backend.
-        if (result.refresh) {
-          if (localStorage.getItem("resumeai-refresh-token")) {
-            localStorage.setItem("resumeai-refresh-token", result.refresh);
-          } else {
-            sessionStorage.setItem(
-              "resumeai-refresh-token",
-              result.refresh
-            );
-          }
-        }
-
-        return result.access;
+        return true;
       } 
       finally {
         refreshPromise = null;
@@ -105,6 +65,7 @@ async function sendRequest(path, options, token) {
   return fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
+    credentials: "include",
   });
 }
 
@@ -138,7 +99,7 @@ export async function apiRequest(path, options = {}) {
       response = await sendRequest(path, options, newToken);
     } else {
       clearTokens();
-      window.location.assign("/login");
+      window.location.assign(window.BurnettSuite?.loginUrl?.() || "/login");
       throw new Error("Session expired. Please log in again.");
     }
   }

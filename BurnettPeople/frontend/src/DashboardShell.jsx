@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "./DashboardIcons";
 import { userDisplayName, userInitials, roleLabel } from "./auth/userDisplay";
 import "./AdminDashboard.css";
-import "./DashboardScale.css";
 import burnettLogo from "./assets/burnettpeople-logo.png";
 import loginDarkTeal from "./assets/login-dark-teal.png";
 import loginSoftMint from "./assets/login-soft-mint.png";
@@ -25,7 +24,6 @@ export default function DashboardShell({
   searchPlaceholder = "Search...",
   unread = 0,
   homePath = "/",
-  footerLabel = "Workspace",
   children,
 }) {
   const [bellOpen, setBellOpen] = useState(false);
@@ -138,10 +136,6 @@ export default function DashboardShell({
 
         <main className="admin-workspace" style={{ backgroundImage: `url(${loginSoftMint})` }}>
           {children}
-          <footer className="admin-footer">
-            <span>© 2026 BurnettPeople</span>
-            <span>{footerLabel}</span>
-          </footer>
         </main>
       </div>
     </div>

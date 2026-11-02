@@ -1,0 +1,12 @@
+# Local-only extension for deterministic demo accounts. AI uses the same
+# Amazon Bedrock configuration locally and on EC2; no model is downloaded into
+# Docker. Keep credentials in the ignored root .env file.
+services:
+  # Interview currently owns the suite credential record. Resume and People
+  # create their bounded local profile from the signed suite session on first use.
+  interview-api:
+    environment:
+      DEMO_SEED_ENABLED: "true"
+      DEMO_USER_EMAIL: interview.demo@burnett.local
+      DEMO_USER_MOBILE: "+919900000101"
+      DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD:-BurnettLocal!2026}

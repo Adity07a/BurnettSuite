@@ -31,20 +31,23 @@ function InterviewSetup() {
 
   useEffect(() => {
     let active = true;
-    setProgress(null);
-    setProgressError("");
     api
       .get("interviews/question-bank/progress/", {
         params: { interview_type: type, difficulty },
       })
       .then(({ data }) => {
-        if (active) setProgress(data);
+        if (active) {
+          setProgress(data);
+          setProgressError("");
+        }
       })
       .catch(() => {
-        if (active)
+        if (active) {
+          setProgress(null);
           setProgressError(
             "Practice progress unavailable. Please refresh to retry."
           );
+        }
       });
     return () => {
       active = false;

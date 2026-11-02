@@ -3,6 +3,9 @@ from django.db import models
 
 
 class User(AbstractUser):
+    # Username is retained as an internal unique key because removing Django's
+    # inherited field would be a destructive account migration. It is generated
+    # server-side and is no longer accepted for registration or authentication.
     email = models.EmailField(unique=True)
     is_email_verified = models.BooleanField(default=False)
 
@@ -18,7 +21,12 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="profile",
     )
-    phone = models.CharField(max_length=20, blank=True)
+    phone = models.CharField(
+        max_length=16,
+        blank=True,
+        null=True,
+        unique=True,
+    )
     location = models.CharField(max_length=255, blank=True)
     headline = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)

@@ -10,11 +10,7 @@ User = get_user_model()
 
 
 @override_settings(
-    MAILERS={
-        "default": {
-            "BACKEND": "django.core.mail.backends.locmem.EmailBackend",
-        },
-    },
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     FRONTEND_URL="http://localhost:5173",
     PUBLIC_API_BASE_URL="http://testserver",
     EMAIL_VERIFICATION_TOKEN_MAX_AGE=86400,
@@ -44,8 +40,8 @@ class AuthAndProfileWorkflowTests(APITestCase):
 
     def test_registration_sends_verification_email_and_link_works(self):
         response = self.client.post(reverse("register"), {
-            "username": "new-user",
             "email": "new@example.com",
+            "mobile": "+919700000001",
             "first_name": "New",
             "last_name": "User",
             "password": "Strong-Password-839!",
@@ -79,6 +75,16 @@ class AuthAndProfileWorkflowTests(APITestCase):
         self.assertIn("access", login_response.data)
         self.assertIn("refresh", login_response.data)
 
+        mobile_login = self.client.post(
+            reverse("token_obtain_pair"),
+            {
+                "identifier": "+919700000001",
+                "password": "Strong-Password-839!",
+            },
+            format="json",
+        )
+        self.assertEqual(mobile_login.status_code, 200, mobile_login.data)
+
     def test_password_reset_link_changes_password(self):
         response = self.client.post(reverse("password-reset-request"), {
             "email": self.user.email,
@@ -98,6 +104,21 @@ class AuthAndProfileWorkflowTests(APITestCase):
         self.assertEqual(response.status_code, 200, response.data)
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password("New-Strong-Password-839!"))
+
+    def test_registration_rejects_case_insensitive_duplicate_email(self):
+        response = self.client.post(
+            reverse("register"),
+            {
+                "email": "PROFILE@EXAMPLE.COM",
+                "first_name": "Duplicate",
+                "last_name": "User",
+                "password": "Strong-Password-839!",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.data)
 
     def test_logout_blacklists_refresh_token(self):
         from rest_framework_simplejwt.tokens import RefreshToken

@@ -1,8 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 import Dashboard from "./pages/Dashboard"; 
-import Login from "./pages/Login"; 
-import Register from "./pages/Register"; 
 import Resume from "./pages/Resume"; 
 import InterviewSetup from "./pages/InterviewSetup"; 
 import InterviewRoom from "./pages/InterviewRoom"; 
@@ -18,13 +16,26 @@ import AdminRoute from "./components/AdminRoute";
 const Protected = ({ children }) => <ProtectedRoute>{children}</ProtectedRoute>;
 const ProtectedAdmin = ({ children }) => <AdminRoute>{children}</AdminRoute>;
 
+function CentralAuthRedirect({ register = false }) {
+  useEffect(() => {
+    const target = register
+      ? window.BurnettSuite?.registerUrl?.()
+      : window.BurnettSuite?.loginUrl?.();
+    window.location.replace(
+      target || (register ? "http://localhost/register" : "http://localhost/login")
+    );
+  }, [register]);
+  return <div className="p-8 text-center">Opening BurnettSuite authentication…</div>;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* Product entry opens the functional workspace, not a marketing page. */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/login" element={<CentralAuthRedirect />} />
+        <Route path="/register" element={<CentralAuthRedirect register />} />
         
         {/* Candidate Routes */}
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />

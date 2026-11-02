@@ -105,29 +105,19 @@ function notifySessionExpired() {
 async function refreshSession() {
   if (refreshPromise) return refreshPromise;
 
-  const oldRefreshToken = refreshToken;
-  if (!oldRefreshToken) {
-    notifySessionExpired();
-    throw new ApiError("Your session has expired. Please sign in again.", { status: 401 });
-  }
-
   refreshPromise = (async () => {
     try {
-      const response = await fetch(buildUrl("/auth/token/refresh/"), {
+      const response = await fetch("/api/suite-auth/refresh/", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ refresh: oldRefreshToken }),
+        body: "{}",
       });
       const data = await readResponse(response);
 
-      if (!response.ok || !data?.access) {
+      if (!response.ok) {
         throw makeApiError(response.status || 401, data, "Your session has expired. Please sign in again.");
       }
-
-      // ROTATE_REFRESH_TOKENS is enabled in Django. Save the newly returned
-      // refresh token so that the blacklisted old token is never reused.
-      accessToken = data.access;
-      refreshToken = data.refresh || oldRefreshToken;
       return true;
     } catch (error) {
       notifySessionExpired();
@@ -141,14 +131,13 @@ async function refreshSession() {
   return refreshPromise;
 }
 
-function headersFor(options, useAuth) {
+function headersFor(options) {
   const headers = new Headers(options.headers || {});
   if (options.body !== undefined || options.bodyFactory) {
     if (!headers.has("Content-Type")) headers.set("Content-Type", "application/json");
   }
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
-  if (useAuth && accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
-  else headers.delete("Authorization");
+  headers.delete("Authorization");
   return headers;
 }
 
@@ -166,7 +155,8 @@ async function send(endpoint, method, rawOptions = {}) {
   const runFetch = () => fetch(url, {
     ...fetchOptions,
     method: normalizedMethod,
-    headers: headersFor({ ...fetchOptions, bodyFactory }, auth),
+    credentials: "include",
+    headers: headersFor({ ...fetchOptions, bodyFactory }),
     ...(bodyFactory ? { body: bodyFactory() } : {}),
   });
 
@@ -175,7 +165,7 @@ async function send(endpoint, method, rawOptions = {}) {
 
   if (
     response.status === 401 && auth && !skipRefresh && !isAuthEndpoint &&
-    (requestAccessToken || accessToken) && refreshToken
+    !isAuthEndpoint
   ) {
     // If another request already rotated the token, reuse that new access token.
     if (accessToken === requestAccessToken) await refreshSession();
@@ -255,10 +245,7 @@ const apiClient = {
   // authenticates the access token before blacklisting the refresh token. The
   // body factory uses the newly rotated refresh token on that one retry.
   logout() {
-    return send("/auth/logout/", "POST", {
-      retryAfterRefresh: true,
-      bodyFactory: () => JSON.stringify({ refresh: refreshToken }),
-    });
+    return send("/suite-auth/logout/", "POST", { auth: false, skipRefresh: true });
   },
 };
 

@@ -55,17 +55,10 @@ function Home() {
           <div className="flex items-center gap-2 sm:gap-3">
             <button
               type="button"
-              onClick={() => navigate("/login")}
-              className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/5 transition"
-            >
-              Login
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/dashboard")}
               className="px-5 py-2.5 rounded-xl bg-white text-slate-950 text-sm font-bold hover:bg-slate-100 transition"
             >
-              Register
+              Open workspace
             </button>
           </div>
         </div>
@@ -101,17 +94,10 @@ function Home() {
                 <div className="flex flex-col sm:flex-row gap-4 mt-9">
                   <button
                     type="button"
-                    onClick={() => navigate("/register")}
+                    onClick={() => navigate("/dashboard")}
                     className="px-7 py-4 rounded-2xl bg-white text-slate-950 font-bold hover:bg-slate-100 transition"
                   >
-                    Get Started
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate("/login")}
-                    className="px-7 py-4 rounded-2xl border border-white/15 bg-white/5 text-white font-semibold hover:bg-white/10 transition"
-                  >
-                    I Already Have an Account
+                    Open Interview Workspace
                   </button>
                 </div>
 
@@ -254,10 +240,10 @@ function Home() {
               </p>
               <button
                 type="button"
-                onClick={() => navigate("/register")}
+                onClick={() => navigate("/dashboard")}
                 className="mt-8 px-7 py-4 rounded-2xl bg-white text-slate-950 font-bold hover:bg-slate-100 transition"
               >
-                Create Your Free Account
+                Open Interview Workspace
               </button>
             </div>
           </div>

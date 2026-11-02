@@ -49,11 +49,18 @@ function ThemeToggle({ theme, onToggle }) {
 
 function LoginPage({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
+  const centralAuthOnly = true;
+
+  useEffect(() => {
+    if (centralAuthOnly) {
+      window.location.replace(window.BurnettSuite?.loginUrl?.() || "http://localhost/login");
+    }
+  }, [centralAuthOnly]);
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -61,7 +68,7 @@ function LoginPage({ onLogin }) {
     setBusy(true);
 
     try {
-      const user = await onLogin(email.trim(), password);
+      const user = await onLogin(identifier.trim(), password);
       navigate(homeForUser(user), { replace: true });
     } catch (requestError) {
       setError(
@@ -72,7 +79,9 @@ function LoginPage({ onLogin }) {
     }
   }
 
-  return (
+  return centralAuthOnly ? (
+    <main className="app-boot" role="status">Opening BurnettSuite authentication…</main>
+  ) : (
     <main className="login-page">
       <section
         className="brand-panel"
@@ -172,16 +181,16 @@ function LoginPage({ onLogin }) {
           </p>
 
           <form onSubmit={handleLogin}>
-            <label htmlFor="email">Work Email</label>
+            <label htmlFor="identifier">Work email or mobile number</label>
 
             <div className="input-wrap">
               <span className="input-icon">✉</span>
               <input
-                id="email"
-                type="email"
-                placeholder="you@company.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                id="identifier"
+                type="text"
+                placeholder="you@company.com or mobile number"
+                value={identifier}
+                onChange={(event) => setIdentifier(event.target.value)}
                 autoComplete="username"
                 required
               />
@@ -407,6 +416,7 @@ function GuardedRoutes(props) {
 
 function App() {
   const [user, setUser] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
 
   const [theme, setTheme] = useState(() => {
     try {
@@ -429,14 +439,29 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    apiClient.setSessionExpiredHandler(() => setUser(null));
+    apiClient.setSessionExpiredHandler(() => {
+      setUser(null);
+      window.location.assign(window.BurnettSuite?.loginUrl?.() || "http://localhost/login");
+    });
     return () => apiClient.setSessionExpiredHandler(null);
   }, []);
 
-  async function handleLogin(email, password) {
+  useEffect(() => {
+    let active = true;
+    apiClient.get("/auth/me/").then((profile) => {
+      if (active) setUser(profile);
+    }).catch(() => {
+      if (active) setUser(null);
+    }).finally(() => {
+      if (active) setAuthReady(true);
+    });
+    return () => { active = false; };
+  }, []);
+
+  async function handleLogin(identifier, password) {
     const tokens = await apiClient.post(
       "/auth/token/",
-      { email, password },
+      { identifier, password },
       { auth: false, skipRefresh: true }
     );
 
@@ -472,19 +497,22 @@ function App() {
 
   async function handleLogout() {
     try {
-      if (apiClient.getRefreshToken()) {
-        await apiClient.logout();
-      }
+      await apiClient.logout();
     } catch {
       // Always clear the local session.
     } finally {
       apiClient.clearSession();
       setUser(null);
+      window.location.assign(window.BurnettSuite?.urls?.platform || "http://localhost");
     }
   }
 
   function toggleTheme() {
     setTheme((current) => (current === "dark" ? "light" : "dark"));
+  }
+
+  if (!authReady) {
+    return <div className="app-boot" role="status">Loading your BurnettSuite session…</div>;
   }
 
   return (

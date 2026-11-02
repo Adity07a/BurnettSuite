@@ -1,57 +1,121 @@
+import uuid
+
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from rest_framework import serializers # type: ignore
-from .models import UserProfile
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import update_last_login
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.db import transaction
+from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from .identifiers import normalize_mobile
+from .models import UserProfile
 
 
-User=get_user_model()
+User = get_user_model()
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password=serializers.CharField(
+    mobile = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+    )
+    password = serializers.CharField(
         write_only=True,
         min_length=8,
-        style={"input_type":"password"},
+        style={"input_type": "password"},
     )
 
     class Meta:
-        model=User
-        fields=[
+        model = User
+        fields = [
             "id",
-            "username",
             "email",
+            "mobile",
             "first_name",
             "last_name",
             "password",
         ]
-        read_only_fields=["id"]
+        read_only_fields = ["id"]
 
-    def validate_email(self,value):
-        return value.lower().strip()
+    def validate_email(self, value):
+        value = value.lower().strip()
+        # Django's database uniqueness is case-sensitive on some backends,
+        # while login is intentionally case-insensitive. Enforce one account
+        # per normalized email before reaching the database constraint.
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError(
+                "This email address is already registered."
+            )
+        return value
 
-    def create(self,validated_data):
-        user = User.objects.create_user(**validated_data)
-        UserProfile.objects.get_or_create(user=user)
-        return user
-
-class EmailVerificationTokenObtainPairSerializer(
-    TokenObtainPairSerializer
-):
-    """Log in with email and password, requiring email verification."""
-
-    # React sends {"email": "...", "password": "..."}.
-    username_field = "email"
+    def validate_mobile(self, value):
+        if not value:
+            return ""
+        mobile = normalize_mobile(value)
+        if UserProfile.objects.filter(phone=mobile).exists():
+            raise serializers.ValidationError(
+                "This mobile number is already registered."
+            )
+        return mobile
 
     def validate(self, attrs):
-        email = str(attrs.get("email", "")).strip().lower()
+        candidate = User(
+            username="resume_pending_validation",
+            email=attrs.get("email", ""),
+            first_name=attrs.get("first_name", ""),
+            last_name=attrs.get("last_name", ""),
+        )
+        try:
+            validate_password(attrs["password"], candidate)
+        except ValidationError as error:
+            raise serializers.ValidationError({"password": error.messages})
+        return attrs
+
+    @transaction.atomic
+    def create(self, validated_data):
+        mobile = validated_data.pop("mobile", "") or None
+        user = User.objects.create_user(
+            username=f"resume_{uuid.uuid4().hex[:16]}",
+            **validated_data,
+        )
+        UserProfile.objects.get_or_create(
+            user=user,
+            defaults={"phone": mobile},
+        )
+        return user
+
+
+class EmailVerificationTokenObtainPairSerializer(serializers.Serializer):
+    """Log in with email and password, requiring email verification."""
+
+    identifier = serializers.CharField(required=False, write_only=True)
+    email = serializers.CharField(required=False, write_only=True)
+    password = serializers.CharField(write_only=True, trim_whitespace=False)
+
+    def validate(self, attrs):
+        identifier = str(
+            attrs.get("identifier") or attrs.get("email") or ""
+        ).strip()
         password = attrs.get("password", "")
 
-        user = User.objects.filter(
-            email__iexact=email
-        ).first()
+        user = None
+        if "@" in identifier:
+            user = User.objects.filter(email__iexact=identifier).first()
+        elif identifier:
+            try:
+                mobile = normalize_mobile(identifier)
+            except serializers.ValidationError:
+                mobile = None
+            if mobile:
+                profile = UserProfile.objects.select_related("user").filter(
+                    phone=mobile
+                ).first()
+                user = profile.user if profile else None
 
         # Use the same error for invalid credentials.
         if (
@@ -60,7 +124,7 @@ class EmailVerificationTokenObtainPairSerializer(
             or not user.check_password(password)
         ):
             raise AuthenticationFailed(
-                "Invalid email or password.",
+                "Invalid email/mobile or password.",
                 code="no_active_account",
             )
 
@@ -75,7 +139,7 @@ class EmailVerificationTokenObtainPairSerializer(
             )
 
         self.user = user
-        refresh = self.get_token(user)
+        refresh = RefreshToken.for_user(user)
 
         data = {
             "refresh": str(refresh),
@@ -86,6 +150,7 @@ class EmailVerificationTokenObtainPairSerializer(
             update_last_login(None, user)
 
         return data
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,4 +168,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["created_at", "updated_at"]
 
-    
+
